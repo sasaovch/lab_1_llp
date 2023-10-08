@@ -28,7 +28,8 @@ typedef enum {
 typedef enum {
   RELATIONSHIP,
   NODE,
-  PROPERTY
+  PROPERTY,
+  META,
 } TypeOfElement;
 
 typedef struct {
