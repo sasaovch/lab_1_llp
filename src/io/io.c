@@ -1,14 +1,4 @@
-#ifndef LAB_1_IO
-#define LAB_1_IO
-
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-
-
-#include "../data/data.c"
+#include "../../include/io/io.h"
 
 void println(const char *line, ...) {
     va_list args;
@@ -97,7 +87,7 @@ void set_pointer_offset_file(File* file, uint64_t offset) {
     error_exit(offs, "Error seeking offset");
 }
 
-void write_to_file(File* file, void* write_buf, uint64_t size) {
+void write_to_file(File* file, const void* write_buf, uint64_t size) {
     ssize_t bytes_written = write(file->file_descriptor, write_buf, size);
     error_exit(bytes_written, "Error writing to file");
 }
@@ -120,5 +110,3 @@ void db_close(Cursor* cursor) {
     free(cursor->page);
     free(cursor);
 }
-
-#endif

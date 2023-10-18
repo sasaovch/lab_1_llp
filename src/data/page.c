@@ -1,4 +1,4 @@
-#include "../io/io.c"
+#include "../../include/data/page.h"
 
 void print_page(PageHeader* page_header) {
     println("Header");

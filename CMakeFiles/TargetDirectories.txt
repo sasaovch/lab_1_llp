@@ -1,3 +1,4 @@
-/Users/sasaovch/Development/ITMO/lab_1_llp/CMakeFiles/main.dir
+/Users/sasaovch/Development/ITMO/lab_1_llp/CMakeFiles/llp.dir
+/Users/sasaovch/Development/ITMO/lab_1_llp/CMakeFiles/llp_lib.dir
 /Users/sasaovch/Development/ITMO/lab_1_llp/CMakeFiles/edit_cache.dir
 /Users/sasaovch/Development/ITMO/lab_1_llp/CMakeFiles/rebuild_cache.dir

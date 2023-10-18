@@ -92,8 +92,6 @@ main_EXTERNAL_OBJECTS =
 
 main: CMakeFiles/main.dir/src/main.c.o
 main: CMakeFiles/main.dir/build.make
-main: /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/lib/libpthread.tbd
-main: /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/lib/libpcre.tbd
 main: CMakeFiles/main.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/sasaovch/Development/ITMO/lab_1_llp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable main"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=$(VERBOSE)

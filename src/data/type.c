@@ -1,5 +1,4 @@
-#include "../utils/page_utils.c"
-
+#include "../../include/data/type.h"
 void print_type(Entity* meta_page) {
     println("Print");
     println("Type - %i", meta_page->type);
@@ -45,14 +44,15 @@ void create_page_for_type(Cursor* cursor) {
     free(page_for_type);
 }
 
+//FIXME: good
 Entity* get_entity(Cursor* cursor, TypeOfElement type, const char* name, uint64_t* pointer, Entity* meta_page) {
     PageHeader* page_header = (PageHeader*) malloc(PAGE_HEADER_SIZE);
+    char* page_body = (char*) malloc(PAGE_BODY_SIZE);
     
-    void* page_body = malloc(PAGE_BODY_SIZE);
     int page_num = 0;
 
-    off_t file_length = lseek(cursor->file->file_descriptor, 0, SEEK_END); // find end of file
-    error_exit(file_length, "Failed to find end of file");
+    // off_t file_length = lseek(cursor->file->file_descriptor, 0, SEEK_END); // find end of file
+    // error_exit(file_length, "Failed to find end of file");
     do {
         set_pointer_offset_file(cursor->file, page_num * PAGE_SIZE);
 
@@ -99,6 +99,7 @@ bool create_type(Cursor* cursor, Entity* meta_page) {
     memcpy(cursor->page->body + cursor->page->page_header->offset, meta_page, ENTITY_SIZE);
     cursor->page->page_header->offset += ENTITY_SIZE;
     free(table);
+    println("table");
     return true;
 }
 

@@ -50,6 +50,7 @@ CMakeFiles/main.dir/src/main.c.o: src/main.c \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_select.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_symbol_aliasing.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_clock_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_ct_rune_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_dev_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_errno_t.h \
@@ -107,34 +108,46 @@ CMakeFiles/main.dir/src/main.c.o: src/main.c \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/unistd.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/wait.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/time.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/unistd.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdarg.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdbool.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdint.h \
-  src/io/io.c \
-  src/data/data.c \
-  src/io/io.c \
-  src/utils/page_utils.c \
-  src/data/type.c \
-  src/data/common.c \
-  src/data/crud_methods.c \
-  src/data/data.c \
-  src/data/node.c \
-  src/data/property.c \
-  src/data/relationship.c \
-  src/data/specific.c \
-  src/test.c
+  include/data/data.h \
+  include/io/io.h \
+  include/data/data.h \
+  include/data/page_utils.h \
+  include/data/type.h \
+  include/data/common.h \
+  include/data/crud_methods.h \
+  include/data/data.h \
+  include/data/node.h \
+  include/data/page_utils.h \
+  include/data/property.h \
+  include/data/relationship.h \
+  include/data/specific.h \
+  include/data/type.h \
+  include/include.h \
+  src/test_data.c
 
 
-src/data/specific.c:
+src/test_data.c:
 
-src/data/relationship.c:
+include/include.h:
 
-src/data/common.c:
+include/data/specific.h:
 
-src/data/type.c:
+include/data/relationship.h:
 
-src/data/data.c:
+include/data/property.h:
+
+include/data/common.h:
+
+include/data/page_utils.h:
+
+include/io/io.h:
+
+include/data/data.h:
 
 /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdbool.h:
 
@@ -149,12 +162,6 @@ src/data/data.c:
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/fcntl.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/cdefs.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/Availability.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/malloc/_malloc.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_wchar_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/machine/_types.h:
 
@@ -176,8 +183,6 @@ src/data/data.c:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_rune_t.h:
 
-src/io/io.c:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_rsize_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_posix_vdisable.h:
@@ -188,7 +193,7 @@ src/io/io.c:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_o_dsync.h:
 
-src/data/property.c:
+include/data/type.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_pthread/_pthread_attr_t.h:
 
@@ -248,6 +253,8 @@ src/data/property.c:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/secure/_strings.h:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_clock_t.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/secure/_string.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/secure/_common.h:
@@ -260,7 +267,15 @@ src/data/property.c:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/malloc/_malloc_type.h:
 
+include/data/node.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_timespec.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_wchar_t.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/Availability.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/malloc/_malloc.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/strings.h:
 
@@ -271,8 +286,6 @@ src/data/property.c:
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/stdlib.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/AvailabilityVersions.h:
-
-src/data/node.c:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_select.h:
 
@@ -292,6 +305,8 @@ src/data/node.c:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/gethostuuid.h:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/time.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/i386/types.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_uuid_t.h:
@@ -308,11 +323,11 @@ src/data/node.c:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/alloca.h:
 
-src/data/crud_methods.c:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_u_int16_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_int64_t.h:
+
+include/data/crud_methods.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/machine/types.h:
 
@@ -323,8 +338,6 @@ src/data/crud_methods.c:
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/_types.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/i386/signal.h:
-
-src/utils/page_utils.c:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_int32_t.h:
 
@@ -357,8 +370,6 @@ src/main.c:
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/AvailabilityInternalLegacy.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/AvailabilityInternal.h:
-
-src/test.c:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_fd_clr.h:
 

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libllp_lib.a CMakeFiles/llp_lib.dir/src/data/common.c.o CMakeFiles/llp_lib.dir/src/data/crud_methods.c.o CMakeFiles/llp_lib.dir/src/data/node.c.o CMakeFiles/llp_lib.dir/src/data/page.c.o CMakeFiles/llp_lib.dir/src/data/property.c.o CMakeFiles/llp_lib.dir/src/data/relationship.c.o CMakeFiles/llp_lib.dir/src/data/specific.c.o CMakeFiles/llp_lib.dir/src/data/type.c.o CMakeFiles/llp_lib.dir/src/io/io.c.o CMakeFiles/llp_lib.dir/src/main.c.o CMakeFiles/llp_lib.dir/src/utils/page_utils.c.o CMakeFiles/llp_lib.dir/src/utils/test_data.c.o
+/usr/bin/ranlib libllp_lib.a

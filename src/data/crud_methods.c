@@ -1,8 +1,10 @@
-#include "specific.c"
+#include "../../include/include.h"
 
-
-void create_node(Cursor* cursor, Node* node) {
-    create_element(cursor, node, write_node_to_file, node->name_type, NODE, get_size_of_node, set_node_id);
+uint32_t* create_node(Cursor* cursor, Node* node) {
+    return create_element(cursor, node, write_node_to_file, node->name_type, NODE, get_size_of_node, set_node_id);
+}
+uint32_t* create_big_node(Cursor* cursor, Node* node) {
+    return create_big_element(cursor, node, write_node_to_file, node->name_type, NODE, get_size_of_node, set_node_id);
 }
 
 void create_relationship(Cursor* cursor, Relationship* relationship) {

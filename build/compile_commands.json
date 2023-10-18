@@ -1,0 +1,146 @@
+[
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp.dir/src/data/common.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/common.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/common.c",
+  "output": "CMakeFiles/llp.dir/src/data/common.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp.dir/src/data/crud_methods.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/crud_methods.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/crud_methods.c",
+  "output": "CMakeFiles/llp.dir/src/data/crud_methods.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp.dir/src/data/node.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/node.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/node.c",
+  "output": "CMakeFiles/llp.dir/src/data/node.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp.dir/src/data/page.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/page.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/page.c",
+  "output": "CMakeFiles/llp.dir/src/data/page.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp.dir/src/data/property.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/property.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/property.c",
+  "output": "CMakeFiles/llp.dir/src/data/property.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp.dir/src/data/relationship.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/relationship.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/relationship.c",
+  "output": "CMakeFiles/llp.dir/src/data/relationship.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp.dir/src/data/specific.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/specific.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/specific.c",
+  "output": "CMakeFiles/llp.dir/src/data/specific.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp.dir/src/data/type.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/type.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/type.c",
+  "output": "CMakeFiles/llp.dir/src/data/type.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp.dir/src/io/io.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/io/io.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/io/io.c",
+  "output": "CMakeFiles/llp.dir/src/io/io.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp.dir/src/main.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/main.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/main.c",
+  "output": "CMakeFiles/llp.dir/src/main.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp.dir/src/utils/page_utils.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/utils/page_utils.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/utils/page_utils.c",
+  "output": "CMakeFiles/llp.dir/src/utils/page_utils.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp.dir/src/utils/test_data.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/utils/test_data.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/utils/test_data.c",
+  "output": "CMakeFiles/llp.dir/src/utils/test_data.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp_lib.dir/src/data/common.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/common.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/common.c",
+  "output": "CMakeFiles/llp_lib.dir/src/data/common.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp_lib.dir/src/data/crud_methods.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/crud_methods.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/crud_methods.c",
+  "output": "CMakeFiles/llp_lib.dir/src/data/crud_methods.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp_lib.dir/src/data/node.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/node.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/node.c",
+  "output": "CMakeFiles/llp_lib.dir/src/data/node.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp_lib.dir/src/data/page.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/page.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/page.c",
+  "output": "CMakeFiles/llp_lib.dir/src/data/page.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp_lib.dir/src/data/property.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/property.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/property.c",
+  "output": "CMakeFiles/llp_lib.dir/src/data/property.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp_lib.dir/src/data/relationship.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/relationship.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/relationship.c",
+  "output": "CMakeFiles/llp_lib.dir/src/data/relationship.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp_lib.dir/src/data/specific.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/specific.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/specific.c",
+  "output": "CMakeFiles/llp_lib.dir/src/data/specific.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp_lib.dir/src/data/type.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/type.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/data/type.c",
+  "output": "CMakeFiles/llp_lib.dir/src/data/type.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp_lib.dir/src/io/io.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/io/io.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/io/io.c",
+  "output": "CMakeFiles/llp_lib.dir/src/io/io.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp_lib.dir/src/main.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/main.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/main.c",
+  "output": "CMakeFiles/llp_lib.dir/src/main.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp_lib.dir/src/utils/page_utils.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/utils/page_utils.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/utils/page_utils.c",
+  "output": "CMakeFiles/llp_lib.dir/src/utils/page_utils.c.o"
+},
+{
+  "directory": "/Users/sasaovch/Development/ITMO/lab_1_llp/build",
+  "command": "/usr/bin/clang  -I/Users/sasaovch/Development/ITMO/lab_1_llp/include  -Wall -Wextra  -Wpedantic -Werror -Waddress -g -g -std=gnu11 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -mmacosx-version-min=13.5 -o CMakeFiles/llp_lib.dir/src/utils/test_data.c.o -c /Users/sasaovch/Development/ITMO/lab_1_llp/src/utils/test_data.c",
+  "file": "/Users/sasaovch/Development/ITMO/lab_1_llp/src/utils/test_data.c",
+  "output": "CMakeFiles/llp_lib.dir/src/utils/test_data.c.o"
+}
+]
