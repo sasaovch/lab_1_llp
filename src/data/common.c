@@ -1,5 +1,7 @@
-#include "../../include/data/common.h"
+#include "../../include/include.h"
 #include "data/data.h"
+#include "data/page.h"
+#include "data/type.h"
 #include "io/io.h"
 #include <stdint.h>
 #include <stdlib.h>
@@ -78,16 +80,21 @@ uint32_t* create_element(
     
     entity = get_entity(cursor, type, name_type, &(pointer), entity);
     if (entity == NULL) {
+        free(entity);
+        free(page_header);
         println("Error to find Node with name %s", name_type);
         return NULL;
     }
+    // print_type(entity);
 
     uint32_t page_num = entity->last_block;
     uint64_t page_offset = page_num * PAGE_SIZE;
-    uint64_t global_offset = page_offset + page_header->offset + PAGE_HEADER_SIZE;
 
     set_pointer_offset_file(cursor->file, page_offset);
     read_from_file(cursor->file, page_header, PAGE_HEADER_SIZE);
+    
+    uint64_t global_offset = page_offset + page_header->offset + PAGE_HEADER_SIZE;
+    // print_page(page_header);
 
     if (page_header->offset + get_size_of_element(element) > PAGE_BODY_SIZE) {
         create_new_page(cursor, page_header, page_offset);
@@ -95,9 +102,15 @@ uint32_t* create_element(
         entity->last_block = cursor->number_of_pages;
         global_offset = cursor->number_of_pages * PAGE_SIZE + PAGE_HEADER_SIZE;
     }
+
+    // print_page(page_header);
     set_pointer_offset_file(cursor->file, global_offset);
     write_element_to_file(cursor, page_header, entity, element, &(pointer));
 
+    page_offset = page_header->block_number * PAGE_SIZE;
+    set_pointer_offset_file(cursor->file, page_offset + PAGE_HEADER_SIZE - UINT32_T_SIZE);
+    write_to_file(cursor->file, &(page_header->offset), UINT32_T_SIZE);
+    
     if (get_size_of_element(element) > PAGE_BODY_SIZE) {
         create_new_page(cursor, page_header, page_offset);
         entity->last_block = cursor->number_of_pages;
@@ -120,10 +133,11 @@ void* get_elements_by_condition(
         Cursor* cursor, Entity* meta_page, 
         uint64_t size_of_element, 
         void* helper, 
-        void* (*read_big_element)(Cursor*, Entity*, PageHeader*, void*, uint64_t*, char*, uint32_t*), 
+        void* (*read_big_element)(Cursor* , Entity* , PageHeader* , void* , const uint64_t* , char* , uint32_t* ), 
         bool (*condition)(void*, void*), uint64_t (*get_size_of_element)(void*),
         void (*write_element)(void*, Entity*, char*, uint64_t*)
     ) {
+        // print_type(meta_page);
     uint32_t read_block = meta_page->first_block;
     uint64_t stack_offset = UINT32_T_SIZE;
     uint32_t find_number = 0;
@@ -143,6 +157,8 @@ void* get_elements_by_condition(
         read_from_file(cursor->file, body, PAGE_BODY_SIZE);
 
         while (offset < page_header->offset) {
+            // debug(160, "");
+        // print_page(page_header);
 
             element = read_big_element(cursor, meta_page, page_header, element, &(offset), body, &(read_block));
             if (condition(element, helper)) {
@@ -153,12 +169,14 @@ void* get_elements_by_condition(
                     stack = realloc(stack, stack_size);
                 }
                 write_element(element, meta_page, stack, &(stack_offset));
+                // stack_offset += get_size_of_element(element);
             }
             offset = (offset + get_size_of_element(element)) % PAGE_BODY_SIZE;
         }
         read_block = page_header->next_block;
     }
     memcpy(stack, &(find_number), UINT32_T_SIZE);
+    // debug(178, "%llu", find_number);
 
     free(element);
     free(page_header);
@@ -173,7 +191,7 @@ void* find_element(
         void* find_elem, uint64_t* offset_,
         bool (*comparator)(void*, void*),
         uint64_t (*get_size_of_element)(void *),
-        void* (*read_big_element)(Cursor*, Entity*, PageHeader*, void*, const uint64_t*, char*, uint32_t*)
+        void* (*read_big_element)(Cursor* cursor, Entity* meta_page, PageHeader* page_header, void* element, const uint64_t* offset_, char* body, uint32_t* read_block)
     ) {
     PageHeader* page_header = (PageHeader*) malloc(PAGE_HEADER_SIZE);
 
@@ -212,76 +230,163 @@ void* find_element(
     return NULL;
 }
 
-void cut_node_blocks(Cursor* cursor, void* new_body, Page* page, uint64_t offset, uint64_t pointer, Entity* entity, void* element) {
-    Node* nd = (Node*) element;
-    uint32_t lenght = nd->name_length;
-    PageHeader* new_page_header = (PageHeader*) malloc(PAGE_HEADER_SIZE);
-    char* copy_body = (char*) malloc(PAGE_BODY_SIZE);
-    char* empty_body = (char*) calloc(1, PAGE_BODY_SIZE);
+// void cut_node_blocks(Cursor* cursor, void* new_body, Page* page, uint64_t offset, uint64_t pointer, Entity* entity, void* element) {
+//     Node* nd = (Node*) element;
+//     uint32_t lenght = nd->name_length;
+//     PageHeader* new_page_header = (PageHeader*) malloc(PAGE_HEADER_SIZE);
+//     char* copy_body = (char*) malloc(PAGE_BODY_SIZE);
+//     char* empty_body = (char*) calloc(1, PAGE_BODY_SIZE);
 
-    memcpy(new_body, page->body, offset);
-    // memcpy(new_body + offset, page->body + offset + get_size_of_element(find_el), PAGE_BODY_SIZE - offset - get_size_of_element(find_el));
-    set_pointer_offset_file(cursor->file, page->page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
-    write_to_file(cursor->file, &(offset), UINT32_T_SIZE);
-    write_to_file(cursor->file, new_body, PAGE_BODY_SIZE);
-    uint32_t* stack = (uint32_t*) malloc(lenght);
-    lenght -= (PAGE_BODY_SIZE - offset - UINT32_T_SIZE * 2);
-    memcpy(new_page_header, page->page_header, PAGE_HEADER_SIZE);
-    int i = 0;
-    while (lenght > 0) {
-        set_pointer_offset_file(cursor->file, new_page_header->next_block * PAGE_SIZE);
-        read_from_file(cursor->file, new_page_header, PAGE_HEADER_SIZE);
-        read_from_file(cursor->file, copy_body, PAGE_BODY_SIZE);
-        if (lenght >= PAGE_BODY_SIZE) {
-            uint32_t zero = 0;
-            set_pointer_offset_file(cursor->file, new_page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
-            write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
-            write_to_file(cursor->file, empty_body, PAGE_BODY_SIZE);
-            stack[i] = new_page_header->block_number;
-            cut_blocks(cursor, page->page_header, &(pointer), entity);
-        } else {
-            free(new_body);
-            void* n_body = calloc(1, PAGE_BODY_SIZE);
-            memcpy(n_body, copy_body + lenght, lenght);
-            set_pointer_offset_file(cursor->file, new_page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
-            uint32_t new_offset = new_page_header->offset - lenght;
-            write_to_file(cursor->file, &(new_offset), UINT32_T_SIZE);
-            write_to_file(cursor->file, n_body, PAGE_BODY_SIZE);
-            if (new_offset == 0) {
-                cut_blocks(cursor, page->page_header, &(pointer), entity);
-            }
-        }
-        lenght -= PAGE_BODY_SIZE;
+//     memcpy(new_body, page->body, offset);
+//     // memcpy(new_body + offset, page->body + offset + get_size_of_element(find_el), PAGE_BODY_SIZE - offset - get_size_of_element(find_el));
+//     set_pointer_offset_file(cursor->file, page->page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
+//     write_to_file(cursor->file, &(offset), UINT32_T_SIZE);
+//     write_to_file(cursor->file, new_body, PAGE_BODY_SIZE);
+//     uint32_t* stack = (uint32_t*) malloc(lenght);
+//     lenght -= (PAGE_BODY_SIZE - offset - UINT32_T_SIZE * 2);
+//     memcpy(new_page_header, page->page_header, PAGE_HEADER_SIZE);
+//     int i = 0;
+//     while (lenght > 0) {
+//         set_pointer_offset_file(cursor->file, new_page_header->next_block * PAGE_SIZE);
+//         read_from_file(cursor->file, new_page_header, PAGE_HEADER_SIZE);
+//         read_from_file(cursor->file, copy_body, PAGE_BODY_SIZE);
+//         if (lenght >= PAGE_BODY_SIZE) {
+//             uint32_t zero = 0;
+//             set_pointer_offset_file(cursor->file, new_page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
+//             write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
+//             write_to_file(cursor->file, empty_body, PAGE_BODY_SIZE);
+//             stack[i] = new_page_header->block_number;
+//             cut_blocks(cursor, page->page_header, &(pointer), entity);
+//         } else {
+//             free(new_body);
+//             void* n_body = calloc(1, PAGE_BODY_SIZE);
+//             memcpy(n_body, copy_body + lenght, lenght);
+//             set_pointer_offset_file(cursor->file, new_page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
+//             uint32_t new_offset = new_page_header->offset - lenght;
+//             write_to_file(cursor->file, &(new_offset), UINT32_T_SIZE);
+//             write_to_file(cursor->file, n_body, PAGE_BODY_SIZE);
+//             if (new_offset == 0) {
+//                 cut_blocks(cursor, page->page_header, &(pointer), entity);
+//             }
+//         }
+//         lenght -= PAGE_BODY_SIZE;
+//     }
+
+// }
+
+// void cut_not_big_element(Cursor* cursor, Page* page, uint64_t offset) {
+//     char* new_body = malloc(PAGE_BODY_SIZE);
+//     void* empty_body = calloc(1, PAGE_BODY_SIZE);
+//     memcpy(new_body, page->body, offset);
+//     // memcpy(new_body + offset, page->body + offset + get_size_of_element(find_el), PAGE_BODY_SIZE - offset - get_size_of_element(find_el));
+//     set_pointer_offset_file(cursor->file, page->page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
+//     write_to_file(cursor->file, &(offset), UINT32_T_SIZE);
+//     write_to_file(cursor->file, new_body, PAGE_BODY_SIZE);
+//     PageHeader* next_header = malloc(PAGE_HEADER_SIZE);
+//     set_pointer_offset_file(cursor->file, page->page_header->next_block * PAGE_SIZE);
+//     read_from_file(cursor->file, next_header, PAGE_HEADER_SIZE);
+//     read_from_file(cursor->file, new_body, PAGE_BODY_SIZE);
+//     memcpy(empty_body, new_body + offset, PAGE_BODY_SIZE - offset);
+//     set_pointer_offset_file(cursor->file, next_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
+//     uint32_t off = next_header->offset - offset;
+//     write_to_file(cursor->file, &(off), UINT32_T_SIZE);
+//     write_to_file(cursor->file, &(off), UINT32_T_SIZE);
+//     cut_blocks(cursor, page->page_header, &(pointer), table);
+// }
+
+void remove_bid_element(Cursor* cursor, PageHeader* page_header, const uint64_t* pointer, 
+uint64_t (*get_size_of_element)(void *), void* nd) {
+    uint32_t page_numbers = get_size_of_element(nd) / PAGE_SIZE;
+    if (get_size_of_element(nd) % PAGE_SIZE) {
+        page_numbers++;
+    }
+    uint32_t statck_pointer = 0;
+    uint32_t size_of_deleted = page_numbers * 2;
+    uint32_t* stack = (uint32_t*) calloc(page_numbers, UINT32_T_SIZE);
+    uint32_t deleted_pointer = 0;
+    uint32_t* deleted_blocks = (uint32_t*) calloc(size_of_deleted, UINT32_T_SIZE);
+    PageHeader* next_page_header = (PageHeader*) malloc(PAGE_HEADER_SIZE);
+    for (uint32_t i = 0; i < page_numbers; i++) {
+        stack[i] = page_header->block_number;
+        deleted_blocks[deleted_pointer] = page_header->block_number;
+        set_pointer_offset_file(cursor->file, page_header->next_block * PAGE_SIZE);
+        read_from_file(cursor->file, next_page_header, PAGE_HEADER_SIZE);
+        memcpy(page_header, next_page_header, PAGE_HEADER_SIZE);
+        deleted_pointer++;
     }
 
+    set_pointer_offset_file(cursor->file, page_header->next_block * PAGE_SIZE);
+    read_from_file(cursor->file, next_page_header, PAGE_HEADER_SIZE);
+    memcpy(page_header, next_page_header, PAGE_HEADER_SIZE);
+
+    void* empty_block = calloc(1, PAGE_BODY_SIZE);
+    void* copy_body = malloc(PAGE_BODY_SIZE);
+
+    // uint32_t last_block = page_header->block_number;
+
+    while (page_header->next_block != 0) {
+        set_pointer_offset_file(cursor->file, page_header->next_block * PAGE_SIZE);
+        read_from_file(cursor->file, next_page_header, PAGE_HEADER_SIZE);
+        read_from_file(cursor->file, copy_body, PAGE_BODY_SIZE);
+        uint32_t zero = ZERO;
+
+        if (next_page_header->next_block == 0 && cursor->number_of_pages == next_page_header->block_number && statck_pointer == page_numbers - 1) {
+            set_pointer_offset_file(cursor->file, stack[statck_pointer] * PAGE_SIZE + UINT32_T_SIZE);
+            write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
+        } else {
+            set_pointer_offset_file(cursor->file, stack[statck_pointer] * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
+        }
+
+        write_to_file(cursor->file, &(next_page_header->offset), UINT32_T_SIZE);
+        write_to_file(cursor->file, copy_body, PAGE_BODY_SIZE);
+        stack[statck_pointer] = next_page_header->block_number;
+        if (deleted_pointer == size_of_deleted) {
+            size_of_deleted *= 2;
+            deleted_blocks = reallocf(deleted_blocks, size_of_deleted);
+        }
+        deleted_blocks[deleted_pointer] = next_page_header->block_number;
+        deleted_pointer++;
+        memcpy(page_header, next_page_header, PAGE_HEADER_SIZE);
+        statck_pointer = (statck_pointer + 1) % page_numbers;
+        // last_block = page_header->block_number;
+    }
+    uint32_t zero = ZERO;
+    set_pointer_offset_file(cursor->file, page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
+    write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
+    write_to_file(cursor->file, empty_block, PAGE_BODY_SIZE);    
+
+    deleted_pointer--;
+
+    for (uint32_t i = deleted_pointer; i >= 0; i--) {
+        if (deleted_blocks[i] == cursor->number_of_pages) {
+            cursor->number_of_pages--;
+            deleted_pointer--;
+        } else {
+            break;
+        }
+        if (i == 0) {
+            break;
+        }
+    }
+    set_pointer_offset_file(cursor->file, *pointer + TYPE_OF_ELEMENT_SIZE + UINT32_T_SIZE);
+    write_to_file(cursor->file, &(deleted_blocks[deleted_pointer]), UINT32_T_SIZE);
+        
+    int result = ftruncate(cursor->file->file_descriptor, (cursor->number_of_pages + 1) * PAGE_SIZE - 1);
+    error_exit(result, "Failed to clear the file.\n");
+
+    free(empty_block);
+    free(copy_body);
+    free(next_page_header);
+    // return last_block;
 }
 
-void cut_not_big_element(Cursor* cursor, Page* page, uint64_t offset) {
-    char* new_body = malloc(PAGE_BODY_SIZE);
-    void* empty_body = calloc(1, PAGE_BODY_SIZE);
-    memcpy(new_body, page->body, offset);
-    // memcpy(new_body + offset, page->body + offset + get_size_of_element(find_el), PAGE_BODY_SIZE - offset - get_size_of_element(find_el));
-    set_pointer_offset_file(cursor->file, page->page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
-    write_to_file(cursor->file, &(offset), UINT32_T_SIZE);
-    write_to_file(cursor->file, new_body, PAGE_BODY_SIZE);
-    PageHeader* next_header = malloc(PAGE_HEADER_SIZE);
-    set_pointer_offset_file(cursor->file, page->page_header->next_block * PAGE_SIZE);
-    read_from_file(cursor->file, next_header, PAGE_HEADER_SIZE);
-    read_from_file(cursor->file, new_body, PAGE_BODY_SIZE);
-    memcpy(empty_body, new_body + offset, PAGE_BODY_SIZE - offset);
-    set_pointer_offset_file(cursor->file, next_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
-    uint32_t off = next_header->offset - offset;
-    write_to_file(cursor->file, &(off), UINT32_T_SIZE);
-    write_to_file(cursor->file, &(off), UINT32_T_SIZE);
-    cut_blocks(cursor, page->page_header, &(pointer), table);
-}
 
 void delete_element(
         Cursor* cursor, void* element, 
         uint64_t (*get_size_of_element)(void *), 
         uint64_t size_of_sturcture, void* name_type, TypeOfElement type, 
         bool (*comparator)(void*, void*),
-        void* (*read_big_element)(Cursor*, Entity*, PageHeader*, void*, uint64_t*, char*, uint32_t*)
+        void* (*read_big_element)(Cursor* cursor, Entity* meta_page, PageHeader* page_header, void* element, const uint64_t* offset_, char* body, uint32_t* read_block)
     ) {
     uint64_t pointer = 0;
     uint64_t offset = 0;
@@ -302,7 +407,7 @@ void delete_element(
     page->page_header = page_header;
     page->body = body;
     //FIXME: offset - начало элемента
-    void* find_el = find_element(cursor, entity, page, size_of_sturcture, element, &(offset),  comparator, read_big_element);
+    void* find_el = find_element(cursor, entity, page, size_of_sturcture, element, &(offset),  comparator, get_size_of_element, read_big_element);
     
     while (find_el != NULL) {
         if (get_size_of_element(element) <= PAGE_BODY_SIZE) {
@@ -319,6 +424,7 @@ void delete_element(
                 cut_blocks(cursor, page->page_header, &(pointer), entity);
             }
         } else {
+            remove_bid_element(cursor, page_header, &(pointer), get_size_of_element, find_el);
             //offset по идеи 0
             // нужно просто удалить все блоки
 
@@ -326,17 +432,17 @@ void delete_element(
             // memcpy(new_body + offset, page->body + offset + get_size_of_element(find_el), PAGE_BODY_SIZE - offset - get_size_of_element(find_el));
 
             //нужно сделать стек из массива и циклического указателя. Пройти по блокам после удаленных и скопировать их повыше, а пото просто удалить лишние
-            set_pointer_offset_file(cursor->file, page->page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
-            write_to_file(cursor->file, &(offset), UINT32_T_SIZE);
-            write_to_file(cursor->file, new_body, PAGE_BODY_SIZE);
-            set_pointer_offset_file(cursor->file, page->page_header->next_block * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
+            // set_pointer_offset_file(cursor->file, page->page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
+            // write_to_file(cursor->file, &(ZERO), UINT32_T_SIZE);
+            // write_to_file(cursor->file, new_body, PAGE_BODY_SIZE);
+            // set_pointer_offset_file(cursor->file, page->page_header->next_block * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
             
-            uint32_t zero = 0;
-            write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
-            cut_blocks(cursor, page->page_header, &(pointer), entity);
+            // uint32_t zero = 0;
+            // write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
+            // cut_blocks(cursor, page->page_header, &(pointer), entity);
         }
         free(find_el);
-        find_el = find_element(cursor, entity, page, size_of_sturcture, element, &(offset),  comparator, read_big_element);
+        find_el = find_element(cursor, entity, page, size_of_sturcture, element, &(offset),  comparator, get_size_of_element, read_big_element);
 
     }
 
@@ -670,11 +776,10 @@ void update_element(
         Cursor* cursor, void* old_element, 
         void* new_element, uint64_t (*get_size_of_element)(void *), 
         uint64_t size_of_sturcture, void *name_type, TypeOfElement type, 
-        void *(*read_element)(void *, Entity *, char*, uint64_t *), 
+        void *(*read_big_element)(Cursor* cursor, Entity* meta_page, PageHeader* page_header, void* element, const uint64_t* offset_, char* body, uint32_t* read_block), 
         bool (*comparator)(void*, void*), 
-        void (*write_to_file_element)(Cursor *, void*), 
-        void (*set_id)(void*, uint32_t)
+        void (*write_element_to_file)(Cursor*, PageHeader*, Entity*, void*, const uint64_t*)
     ) {
-    delete_element(cursor, old_element, get_size_of_element, size_of_sturcture, name_type, type, read_element, comparator);
-    create_element(cursor, new_element, write_to_file_element, name_type, type, get_size_of_element, set_id);
+    delete_element(cursor, old_element, get_size_of_element, size_of_sturcture, name_type, type, comparator, read_big_element);
+    create_element(cursor, new_element, type, name_type, get_size_of_element, write_element_to_file);
 }

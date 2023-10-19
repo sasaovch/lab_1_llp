@@ -123,4 +123,7 @@ CMakeFiles/llp_lib.dir/src/data/common.c.o: \
   /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/relationship.h \
   /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/property.h \
   /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/page.h \
-  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h \
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page.h \
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h \
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/io/io.h

@@ -126,6 +126,9 @@ CMakeFiles/llp.dir/src/data/common.c.o
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/specific.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/io/io.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/include.h
 
 CMakeFiles/llp.dir/src/data/crud_methods.c.o
@@ -367,7 +370,21 @@ CMakeFiles/llp.dir/src/data/node.c.o
  /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdint.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/io/io.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page_utils.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/common.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/crud_methods.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/node.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/property.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/relationship.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/specific.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/node.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/io/io.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/include.h
 
 CMakeFiles/llp.dir/src/data/page.c.o
  /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/page.c
@@ -597,7 +614,22 @@ CMakeFiles/llp.dir/src/data/property.c.o
  /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdint.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/io/io.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page_utils.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/common.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/crud_methods.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/node.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/property.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/relationship.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/specific.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/property.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/io/io.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/include.h
 
 CMakeFiles/llp.dir/src/data/relationship.c.o
  /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/relationship.c
@@ -712,7 +744,19 @@ CMakeFiles/llp.dir/src/data/relationship.c.o
  /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdint.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/io/io.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page_utils.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/common.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/crud_methods.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/node.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/property.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/relationship.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/specific.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/include.h
 
 CMakeFiles/llp.dir/src/data/specific.c.o
  /Users/sasaovch/Development/ITMO/lab_1_llp/src/data/specific.c
@@ -838,6 +882,8 @@ CMakeFiles/llp.dir/src/data/specific.c.o
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/relationship.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/specific.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/specific.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/include.h
 
 CMakeFiles/llp.dir/src/data/type.c.o
@@ -1184,12 +1230,6 @@ CMakeFiles/llp.dir/src/main.c.o
  /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdarg.h
  /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdbool.h
  /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdint.h
- /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
- /Users/sasaovch/Development/ITMO/lab_1_llp/include/io/io.h
- /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
- /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page_utils.h
- /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
- /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/common.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/crud_methods.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/node.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page.h
@@ -1197,6 +1237,13 @@ CMakeFiles/llp.dir/src/main.c.o
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/relationship.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/specific.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/io/io.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page_utils.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/common.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/include.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/test_data.h
 
@@ -1311,6 +1358,7 @@ CMakeFiles/llp.dir/src/utils/page_utils.c.o
  /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdarg.h
  /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdbool.h
  /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdint.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/io/io.h
 
@@ -1427,12 +1475,6 @@ CMakeFiles/llp.dir/src/utils/test_data.c.o
  /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdarg.h
  /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdbool.h
  /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdint.h
- /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
- /Users/sasaovch/Development/ITMO/lab_1_llp/include/io/io.h
- /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
- /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page_utils.h
- /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
- /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/common.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/crud_methods.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/node.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page.h
@@ -1441,6 +1483,15 @@ CMakeFiles/llp.dir/src/utils/test_data.c.o
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/specific.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/io/io.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/page_utils.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/type.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/common.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/crud_methods.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/node.h
+ /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/relationship.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/include.h
  /Users/sasaovch/Development/ITMO/lab_1_llp/include/test_data.h
 

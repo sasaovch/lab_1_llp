@@ -1,9 +1,7 @@
 CMakeFiles/llp_lib.dir/src/main.c.o: \
   /Users/sasaovch/Development/ITMO/lab_1_llp/src/main.c \
   /Users/sasaovch/Development/ITMO/lab_1_llp/src/../include/test_data.h \
-  /Users/sasaovch/Development/ITMO/lab_1_llp/include/include.h \
-  /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/type.h \
-  /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/./data.h \
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/data.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/stdint.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_int8_t.h \
@@ -47,8 +45,11 @@ CMakeFiles/llp_lib.dir/src/main.c.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/secure/_strings.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/secure/_common.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/secure/_string.h \
-  /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/./page_utils.h \
-  /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/../io/io.h \
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/include.h \
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/type.h \
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/./data.h \
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/./page_utils.h \
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/../io/io.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/_stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_va_list.h \
@@ -115,10 +116,10 @@ CMakeFiles/llp_lib.dir/src/main.c.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_o_dsync.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_s_ifmt.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk/usr/include/sys/_types/_filesec_t.h \
-  /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/../io/../data/data.h \
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/../io/../data/data.h \
   /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/specific.h \
-  /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/common.h \
-  /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/./type.h \
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/common.h \
+  /Users/sasaovch/Development/ITMO/lab_1_llp/include/data/./type.h \
   /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/crud_methods.h \
   /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/node.h \
   /Users/sasaovch/Development/ITMO/lab_1_llp/include/./data/relationship.h \

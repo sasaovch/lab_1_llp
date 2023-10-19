@@ -76,7 +76,11 @@ Cursor* db_open(const char* filename) {
 
     cursor->file = file;
     cursor->last_entity_block = find_last_entity(file_length, page, file);
-    cursor->number_of_pages = file_length / PAGE_SIZE;
+    if (file_length == 0) {
+        cursor->number_of_pages = 0;
+    } else {
+        cursor->number_of_pages = (file_length - 1) / PAGE_SIZE;
+    }
     cursor->page = page;
 
     return cursor;
@@ -109,4 +113,14 @@ void db_close(Cursor* cursor) {
     free(cursor->page->body);
     free(cursor->page);
     free(cursor);
+}
+
+void write_uint_32_to_file(Cursor* cursor, uint32_t number) {
+    write_to_file(cursor->file, &(number), UINT32_T_SIZE);
+}
+void write_type_to_file(Cursor* cursor, char* type) {
+    write_to_file(cursor->file, type, NAME_TYPE_SIZE + 1);
+}
+void write_string_to_file(Cursor* cursor, char* string, uint32_t length) {
+    write_to_file(cursor->file, string, CHAR_SIZE * length);
 }

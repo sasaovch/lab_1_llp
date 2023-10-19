@@ -1,4 +1,5 @@
 #include "../../include/data/type.h"
+
 void print_type(Entity* meta_page) {
     println("Print");
     println("Type - %i", meta_page->type);
@@ -51,8 +52,6 @@ Entity* get_entity(Cursor* cursor, TypeOfElement type, const char* name, uint64_
     
     int page_num = 0;
 
-    // off_t file_length = lseek(cursor->file->file_descriptor, 0, SEEK_END); // find end of file
-    // error_exit(file_length, "Failed to find end of file");
     do {
         set_pointer_offset_file(cursor->file, page_num * PAGE_SIZE);
 
@@ -99,7 +98,6 @@ bool create_type(Cursor* cursor, Entity* meta_page) {
     memcpy(cursor->page->body + cursor->page->page_header->offset, meta_page, ENTITY_SIZE);
     cursor->page->page_header->offset += ENTITY_SIZE;
     free(table);
-    println("table");
     return true;
 }
 

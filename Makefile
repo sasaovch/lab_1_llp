@@ -90,7 +90,7 @@ all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/sasaovch/Development/ITMO/lab_1_llp/CMakeFiles /Users/sasaovch/Development/ITMO/lab_1_llp//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/sasaovch/Development/ITMO/lab_1_llp/CMakeFiles 0
-	rm -f data
+	# rm -f data
 .PHONY : all
 
 # The main clean target

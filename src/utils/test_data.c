@@ -1,7 +1,11 @@
 #include "../../include/test_data.h"
+#include "data/crud_methods.h"
 #include "data/data.h"
+#include "data/node.h"
+#include "data/relationship.h"
 #include "time.h"
 #include <stdint.h>
+#include <stdlib.h>
 
 char* generateRandomString(void) {
     int32_t length = 10;
@@ -22,6 +26,11 @@ void create_entity(Cursor* cursor) {
         {NODE, 0, 0, 0, "pc"},
         { RELATIONSHIP, 0, 0, 110,"play"},
         { RELATIONSHIP, 0, 0, 11110,"brothe"},
+        {PROPERTY, 0, 0,1111,"proper"},
+        {NODE, 0, 0, 0, "car"},
+        {NODE, 0, 0, 0, "phone"},
+        { RELATIONSHIP, 0, 0, 110,"drive"},
+        { RELATIONSHIP, 0, 0, 11110,"call"},
         {PROPERTY, 0, 0,1111,"proper"},
     };
 
@@ -57,17 +66,32 @@ create_entity_for_test(Cursor* cursor) {
     for (int i = 0; i < count_to_write; i++) {
         create_type(cursor, &(data[i]));
     }
-    // flush_page(cursor);
 }
 
 void create_nodes(Cursor* cursor) {
+    char* name = (char*) malloc(PAGE_SIZE + PAGE_BODY_SIZE);
+    for (uint32_t i = 0; i < PAGE_SIZE + PAGE_BODY_SIZE - 1; i++) {
+        name[i] = 'a';
+    }
     Node nodes[] = {
-        {0,"person", 9, "sasaovch"},
-        {0, "person", 7, "andrey"},
-        {0, "pc", 5, "asus"},
-        {0, "pc", 4, "mac"},
-        {0,"person", 9, "sasaovch1"},
-        { 0,"person", 7, "andrey2"},
+        {0, 9, "sasaovch","person"},
+        {0,  7, "andrey","person"},
+        {0,  5, "asus","pc"},
+        {0, 4, "mac","pc"},
+        {0, 4, "mac","pc1"},
+        {0, 4, "bmw","car"},
+        {0, PAGE_SIZE + PAGE_BODY_SIZE, name,"person"},
+        {0, 9, "sasaovch1","person"},
+        { 0, 7, "andrey2","person"},
+        {0, 9, "sasaovch","car"},
+        {0,  7, "andrey","car"},
+        {0,  5, "asus","phone"},
+        {0, 4, "mac","phone"},
+        // {0, 4, "mac","drive"},
+        // {0, 4, "bmw","call"},
+        // {0, PAGE_SIZE + PAGE_BODY_SIZE, name,"person"},
+        // {0, 9, "sasaovch1","person"},
+        // { 0, 7, "andrey2","person"},
     };
 
     int count_to_write = sizeof(nodes) / sizeof(Node);
@@ -84,40 +108,49 @@ void create_big_nodes(Cursor* cursor) {
     }
     println(big_string);
     Node nodes[] = {
-        {0,"person", length,  big_string}
+        {0, length,  big_string,"person",}
     };
 
     int count_to_write = sizeof(nodes) / sizeof(Node);
     for (int i = 0; i < count_to_write; i++) {
-        create_big_element(cursor, &(nodes[i]), write_node_to_file, nodes[i].name_type, NODE, get_size_of_node, set_node_id);
+        create_element(cursor, &(nodes[i]), NODE, nodes[i].name_type, get_size_of_node, write_node_to_file_big);
     }
 }
 
 void create_relationships(Cursor* cursor) {
-    Relationship relationships[] = {
-        {0,"play", 9, "sasaovch", 5, "asus"},
-        {0,"play", 9, "sasaovch", 4, "mac"},
-        {0,"play", 7, "andrey", 5, "asus"},
-        {0,"brothe",9, "sasaovch", 4, "and"},
-        {0,"brothe", 7, "andrey", 5, "sasa"},
+    Relationship2 relationships[] = {
+        {0,0, 1, "play"},
+        {0,1, 0, "play"},
+        {0,2, 3, "play"},
+        {0,3,4, "brother"},
+        {0,0, 1, "brother"},
+        {0,0, 1, "drive"},
+        {0,1, 0, "drive"},
+        {0,2, 3, "call"},
+        {0,3,4, "call"},
+        // {0,0, 1, "brother"},
     };
     
-    int count_to_write = sizeof(relationships) / sizeof(Relationship);
+    int count_to_write = sizeof(relationships) / sizeof(Relationship2);
     for (int i = 0; i < count_to_write; i++) {
-        create_element(cursor, &(relationships[i]), write_relationship_to_file, relationships[i].name_type, RELATIONSHIP, get_size_of_relationship, set_relation_id);
+        create_relationship(cursor, &(relationships[i]));
     }
 }
 
 void create_properties(Cursor* cursor) {
-    Property property[] = {
-        {0,9, "sasaovch", 4, "age", INT, 3, "20"},
-        {0,7, "andrey", 4, "age", INT, 3, "14"},
-        {0,4, "mac", 7, "color", STRING, 7, "silver"},
-        {0,5, "asus", 7, "color", STRING, 6, "black"}
+    Property2 property[] = {
+        {0,INT, 0, 4,3, "age",  "20"},
+        {0,FLOAT,1, 4, 3,"age", "14"},
+        {0,STRING,2, 6, 7,"color", "silver"},
+        {0,BOOL, 3, 6, 6, "color", "black"},
+        {0,INT, 0, 4,3, "age",  "20"},
+        {0,FLOAT,1, 4, 3,"age", "14"},
+        {0,STRING,2, 6, 7,"color", "silver"},
+        {0,BOOL, 3, 6, 6, "color", "black"}
     };
 
         
-    int count_to_write = sizeof(property) / sizeof(Property);
+    int count_to_write = sizeof(property) / sizeof(Property2);
     for (int i = 0; i < count_to_write; i++) {
         create_property(cursor, &(property[i]));
     }
@@ -140,10 +173,12 @@ void delete_entity(Cursor* cursor) {
 
 void delete_nodes(Cursor* cursor) {
     Node nodes[] = {
-        {20000, "person", 11, "lrfkQyuQFj"},
-        {0, "person", 7, "andrey"},
-        {0,"person", 9, "sasaovch"},
-        {0, "pc", 5, "asus"},
+        {0, 9, "sasaovch","person"},
+        {0,  7, "andrey","person"},
+        {0,  5, "asus","pc"},
+        {0, 4, "mac","pc"},
+        {0, 9, "sasaovch1","person"},
+        { 0, 7, "andrey2","person"},
     };
 
     int count_to_write = sizeof(nodes) / sizeof(Node);
@@ -153,29 +188,29 @@ void delete_nodes(Cursor* cursor) {
 }
 
 void delete_relationships(Cursor* cursor) {
-    Relationship relationships[] = {
-        {0,"play", 9, "sasaovch", 4, "mac"},
-        {0,"play", 7, "andrey", 5, "asus"},
-        {0,"brothe",9, "sasaovch", 4, "and"},
-        {0,"brothe", 7, "andrey", 5, "sasa"},
+    Relationship2 relationships[] = {
+        {0,0, 2, "play"},
+        {1,0, 3, "play"},
+        {2,1, 3, "play"},
+        {3,1,0, "brother"},
     };
     
-    int count_to_write = sizeof(relationships) / sizeof(Relationship);
+    int count_to_write = sizeof(relationships) / sizeof(Relationship2);
     for (int i = 0; i < count_to_write; i++) {
-        delete_relationship(cursor, &(relationships[i]));
+        delete_relationship_by_id(cursor, &(relationships[i]));
     }
 }
 
 void delete_properties(Cursor* cursor) {
-    Property property[] = {
-        {0,9, "sasaovch", 4, "age", INT, 3, "20"},
-        {0,7, "andrey", 4, "age", INT, 3, "14"},
-        {0,4, "mac", 6, "color", STRING, 7, "silver"},
-        {0,5, "asus", 6, "color", STRING, 6, "black"}
+    Property2 property[] = {
+        {0,INT, 0, 4,3, "age",  "20"},
+        {0,FLOAT,1, 4, 3,"age", "14"},
+        {0,STRING,2, 7, 7,"color", "silver"},
+        {0,BOOL, 3, 7, 6, "color", "black"}
     };
 
         
-    int count_to_write = sizeof(property) / sizeof(Property);
+    int count_to_write = sizeof(property) / sizeof(Property2);
     for (int i = 0; i < count_to_write; i++) {
         delete_property(cursor, &(property[i]));
     }
@@ -210,17 +245,21 @@ void update_entity(Cursor* cursor) {
 
 void update_nodes(Cursor* cursor) {
     Node old_nodes[] = {
-        {0,"person", 9, "sasaovch"},
-        { 0,"person", 7, "andrey"},
-        { 0,"pc", 5, "asus"},
-        { 0,"pc", 4, "mac"},
+        {0, 9, "sasaovch","person"},
+        {0,  7, "andrey","person"},
+        {0,  5, "asus","pc"},
+        {0, 4, "mac","pc"},
+        {0, 9, "sasaovch1","person"},
+        { 0, 7, "andrey2","person"},
     };
 
     Node new_nodes[] = {
-        {0,"person", 6, "asasa"},
-        { 0,"person", 7, "poppop"},
-        { 0,"pc", 5, "ASUS"},
-        { 0,"pc", 4, "pro"},
+        {0, 9, "sasaovch","person"},
+        {0,  7, "andrey","person"},
+        {0,  5, "asus","pc"},
+        {0, 4, "mac","pc"},
+        {0, 9, "sasaovch1","person"},
+        { 0, 7, "andrey2","person"},
     };
 
     int count_to_write = sizeof(old_nodes) / sizeof(Node);
@@ -230,42 +269,42 @@ void update_nodes(Cursor* cursor) {
 }
 
 void update_relationships(Cursor* cursor) {
-    Relationship old_relationships[] = {
-        {0,"play", 9, "sasaovch", 4, "mac"},
-        {0,"play", 7, "andrey", 5, "asus"},
-        {0,"brothe",9, "sasaovch", 4, "and"},
-        {0,"brothe", 7, "andrey", 5, "sasa"},
+    Relationship2 old_relationships[] = {
+        {0,0, 2, "play"},
+        {1,0, 3, "play"},
+        {2,1, 3, "play"},
+        {3,1,0, "brother"},
     };
-    Relationship new_relationships[] = {
-        {0,"play", 5, "asas", 4, "mac"},
-        {0,"play", 7, "andrey", 5, "asus"},
-        {0,"brothe",9, "sasaovch", 4, "and"},
-        {0,"brothe", 7, "andrey", 5, "sasa"},
+    Relationship2 new_relationships[] = {
+        {0,0, 2, "play"},
+        {1,0, 3, "play"},
+        {2,1, 3, "play"},
+        {3,1,0, "brother"},
     };
     
-    int count_to_write = sizeof(old_relationships) / sizeof(Relationship);
+    int count_to_write = sizeof(old_relationships) / sizeof(Relationship2);
     for (int i = 0; i < count_to_write; i++) {
         update_relationship(cursor, &(old_relationships[i]), &(new_relationships[i])); 
     }
 }
 
 void update_properties(Cursor* cursor) {
-    Property old_property[] = {
-        {0,9, "sasaovch", 4, "age", INT, 3, "20"},
-        {0,7, "andrey", 4, "age", INT, 3, "14"},
-        {0,4, "mac", 6, "color", STRING, 7, "silver"},
-        {0,5, "asus", 6, "color", STRING, 6, "black"}
+    Property2 old_property[] = {
+        {0,INT, 0, 4,3, "age",  "20"},
+        {0,FLOAT,1, 4, 3,"age", "14"},
+        {0,STRING,2, 7, 7,"color", "silver"},
+        {0,BOOL, 3, 7, 6, "color", "black"}
     };
     
-    Property new_property[] = {
-        {0,9, "sasaovch", 4, "age", INT, 3, "30"},
-        {0,7, "andrey", 4, "age", INT, 3, "24"},
-        {0,4, "mac", 6, "color", STRING, 5, "gold"},
-        {0,5, "asus", 6, "color", STRING, 7, "yellow"}
+    Property2 new_property[] = {
+        {0,INT, 0, 4,3, "age",  "20"},
+        {0,FLOAT,1, 4, 3,"age", "14"},
+        {0,STRING,2, 7, 7,"color", "silver"},
+        {0,BOOL, 3, 7, 6, "color", "black"}
     };
 
         
-    int count_to_write = sizeof(old_property) / sizeof(Property);
+    int count_to_write = sizeof(old_property) / sizeof(Property2);
     for (int i = 0; i < count_to_write; i++) {
         update_property(cursor, &(old_property[i]), &(new_property[i])); 
     }
@@ -318,15 +357,31 @@ void smoke_test(Cursor* cursor, int num) {
     println("Read %f", time_spent_2);
     free(name);
 }
+void test_copy(void) {
+
+    void* stack = malloc(PAGE_SIZE);
+    Node n =  {0, 9, "sasaovch","person"};
+    uint64_t zero = 0;
+    memcpy_node(&(n), NULL, stack, &(zero));
+    zero = 0;
+    debug(346, "%llu", zero);
+    Node* nd = malloc(NODE_SIZE);
+    nd = memget_node(nd, NULL, stack, &(zero));
+    debug(351, "%llu", zero);
+    print_node(nd);
+}
 
 void print_by_node(Cursor* cursor) {
-    Node node = {0,"person", 9, "sasaovch"};
-    print_property_by_node(cursor, &(node));
-    print_relationship_by_node(cursor, &(node));
+    Node node = {0,9,  "sasaovch", "person"};
+    (void) cursor;
+    (void) node;
+    // print_property_by_node(cursor, &(node));
+    // print_relationship_by_node(cursor, &(node));
 }
 
 void read_test(Cursor* cursor) {
-    read_all_elements_by_type(cursor, NODE);
+    (void) cursor;
+    // read_all_elements_by_type(cursor, NODE);
 }
 
 int test(int argc, char* argv[]) {

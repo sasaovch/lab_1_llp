@@ -6,7 +6,7 @@
 #include <string.h>
 
 #define PAGE_SIZE 64
-#define NAME_TYPE_SIZE 16
+#define NAME_TYPE_SIZE 15
 
 typedef struct {
     int file_descriptor;
@@ -121,16 +121,28 @@ typedef struct {
     char* string_value;
 } Request;
 
-const uint32_t ZERO = 0;
-const uint64_t UINT32_T_SIZE = sizeof(uint32_t);
-const uint64_t CHAR_SIZE = sizeof(char);
-const uint64_t NODE_SIZE = sizeof(Node);
-const uint64_t PROPERTY_SIZE = sizeof(Property);
-const uint64_t RELATIONSHIP_SIZE = sizeof(Relationship);
-const uint64_t ENTITY_SIZE = sizeof(Entity);
-const uint64_t PAGE_HEADER_SIZE = sizeof(PageHeader);
-const uint64_t VALUE_TYPE_SIZE = sizeof(ValueType);
-const uint64_t TYPE_OF_ELEMENT_SIZE = sizeof(TypeOfElement);
-const uint64_t PAGE_BODY_SIZE = (PAGE_SIZE - PAGE_HEADER_SIZE);
+// const uint32_t ZERO = 0;
+// const uint64_t UINT32_T_SIZE = sizeof(uint32_t);
+// const uint64_t CHAR_SIZE = sizeof(char);
+// const uint64_t NODE_SIZE = sizeof(Node);
+// const uint64_t PROPERTY_SIZE = sizeof(Property);
+// const uint64_t RELATIONSHIP_SIZE = sizeof(Relationship);
+// const uint64_t ENTITY_SIZE = sizeof(Entity);
+// const uint64_t PAGE_HEADER_SIZE = sizeof(PageHeader);
+// const uint64_t VALUE_TYPE_SIZE = sizeof(ValueType);
+// const uint64_t TYPE_OF_ELEMENT_SIZE = sizeof(TypeOfElement);
+// const uint64_t PAGE_BODY_SIZE = (PAGE_SIZE - PAGE_HEADER_SIZE);
+
+#define ZERO 0
+#define UINT32_T_SIZE sizeof(uint32_t)
+#define CHAR_SIZE sizeof(char)
+#define NODE_SIZE sizeof(Node)
+#define PROPERTY_SIZE sizeof(Property2)
+#define RELATIONSHIP_SIZE sizeof(Relationship2)
+#define ENTITY_SIZE sizeof(Entity)
+#define PAGE_HEADER_SIZE sizeof(PageHeader)
+#define VALUE_TYPE_SIZE sizeof(ValueType)
+#define TYPE_OF_ELEMENT_SIZE sizeof(TypeOfElement)
+#define PAGE_BODY_SIZE (PAGE_SIZE - PAGE_HEADER_SIZE)
 
 #endif //LAB1_STRUCT_H

@@ -104,8 +104,6 @@ void remove_emtpy_blocks(Cursor* cursor, PageHeader* page_header) {
 
 PageHeader* move_blocks_higher(Cursor* cursor, uint64_t* pointer, PageHeader* old_header) {
     uint64_t page_number = *pointer / PAGE_SIZE;
-    // uint32_t page_offset = *pointer % PAGE_SIZE;
-    // uint64_t offset = *pointer % PAGE_SIZE - PAGE_HEADER_SIZE;
     
     set_pointer_offset_file(cursor->file, page_number * PAGE_SIZE);
     read_from_file(cursor->file, old_header, PAGE_HEADER_SIZE);  
@@ -117,10 +115,10 @@ PageHeader* move_blocks_higher(Cursor* cursor, uint64_t* pointer, PageHeader* ol
         set_pointer_offset_file(cursor->file, old_header->next_block * PAGE_SIZE);
         read_from_file(cursor->file, page_header, PAGE_HEADER_SIZE);
         read_from_file(cursor->file, copy_body, PAGE_BODY_SIZE);
-
+uint32_t zero = ZERO;
         if (page_header->next_block == 0) {
             set_pointer_offset_file(cursor->file, old_header->block_number * PAGE_SIZE + UINT32_T_SIZE);
-            write_to_file(cursor->file, &(page_header->next_block), UINT32_T_SIZE);
+            write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
         } else {
             set_pointer_offset_file(cursor->file, old_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
         }
@@ -134,26 +132,21 @@ PageHeader* move_blocks_higher(Cursor* cursor, uint64_t* pointer, PageHeader* ol
     return old_header;
 }
 //FIXME: good
-void create_new_page(Cursor* cursor, PageHeader* page_header, uint64_t curr_table_page_offset) {
+void create_new_page(Cursor* cursor, PageHeader* page_header, uint64_t curr_page_offset) {
     if (page_header->next_block == 0) {
-        void* new_page = calloc(1, PAGE_SIZE);
         cursor->number_of_pages++;
 
-        set_pointer_offset_file(cursor->file, curr_table_page_offset + UINT32_T_SIZE);
-        //записываю адрес последнего блока для данной таблице
+        set_pointer_offset_file(cursor->file, curr_page_offset + UINT32_T_SIZE);
         write_to_file(cursor->file, &(cursor->number_of_pages), UINT32_T_SIZE);
 
         page_header->block_number = cursor->number_of_pages;
         page_header->offset = 0;
         page_header->next_block = 0;
 
-        memcpy(new_page, page_header, PAGE_HEADER_SIZE);
         set_pointer_offset_file(cursor->file, cursor->number_of_pages * PAGE_SIZE);
-        write_to_file(cursor->file, new_page, PAGE_SIZE);
-
-        free(new_page);
+        write_to_file(cursor->file, page_header, PAGE_SIZE);
     } else {
-        set_pointer_offset_file(cursor->file, curr_table_page_offset + UINT32_T_SIZE);
+        set_pointer_offset_file(cursor->file, curr_page_offset + UINT32_T_SIZE);
         write_to_file(cursor->file, &(page_header->next_block), UINT32_T_SIZE);
         set_pointer_offset_file(cursor->file, page_header->next_block * PAGE_SIZE);
         read_from_file(cursor->file, page_header, PAGE_HEADER_SIZE);
@@ -171,10 +164,10 @@ uint32_t remove_empty_block(Cursor* cursor, PageHeader* first_header, PageHeader
         set_pointer_offset_file(cursor->file, first_header->next_block * PAGE_SIZE);
         read_from_file(cursor->file, second_header, PAGE_HEADER_SIZE);
         read_from_file(cursor->file, copy_body, PAGE_BODY_SIZE);
-
+uint32_t zero = ZERO;
         if (second_header->next_block == 0 && cursor->number_of_pages == second_header->block_number) {
             set_pointer_offset_file(cursor->file, first_header->block_number * PAGE_SIZE + UINT32_T_SIZE);
-            write_to_file(cursor->file, &(ZERO), UINT32_T_SIZE);
+            write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
         } else {
             set_pointer_offset_file(cursor->file, first_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
         }
@@ -224,9 +217,9 @@ void cut_blocks(Cursor* cursor, PageHeader* page_header, uint64_t* pointer, Enti
         cursor->number_of_pages--;
         set_pointer_offset_file(cursor->file, *pointer + TYPE_OF_ELEMENT_SIZE + UINT32_T_SIZE);
         write_to_file(cursor->file, &(pre_last_block), UINT32_T_SIZE);
-        
+        uint32_t zero = ZERO;
         set_pointer_offset_file(cursor->file, pre_last_block * PAGE_SIZE + UINT32_T_SIZE);
-        write_to_file(cursor->file, &(ZERO), UINT32_T_SIZE);
+        write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
 
         int result = ftruncate(cursor->file->file_descriptor, (cursor->number_of_pages + 1) * PAGE_SIZE - 1);
         error_exit(result, "Failed to clear the file.\n");

@@ -1,6 +1,7 @@
 #ifndef LAB_1_TEST
 #define LAB_1_TEST
 
+#include "data/data.h"
 #include "include.h"
 
 char* generateRandomString(void);
@@ -43,5 +44,7 @@ void smoke_test(Cursor* cursor, int num
 void print_by_node(Cursor* cursor);
 void read_test(Cursor* cursor) ;
 int test(int argc, char* argv[]) ;
+void test_copy(void);
+// void read_all_elements_by_type(Cursor* cursor, TypeOfElement type);
 
 #endif
