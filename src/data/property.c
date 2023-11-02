@@ -1,6 +1,4 @@
 #include "../../include/include.h"
-#include "data/constants.h"
-#include "io/io.h"
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -147,7 +145,7 @@ uint64_t get_size_of_property(void* pr) {
     return size;
 }
 
-bool compare_property_by_id(void* pr_1, void* pr_2) {
+bool compare_property_by_subject(void* pr_1, void* pr_2) {
     Property* property_1 = (Property*) pr_1;
     Property* property_2 = (Property*) pr_2;
     return property_1->subject_id == property_2->subject_id;

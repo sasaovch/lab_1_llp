@@ -2,7 +2,7 @@
 #define LAB_1_CRUD_H
 
 #include "common.h"
-#include "data/data.h"
+#include "data.h"
 
 uint32_t* create_node(Cursor* cursor, Node* node);
 
@@ -47,8 +47,6 @@ bool update_relationship_by_child(Cursor* cursor, Relationship* old_relationship
 bool update_relationship_by_parent(Cursor* cursor, Relationship* old_relationship, Relationship* new_relationship);
 
 bool update_all_properties(Cursor* cursor, Property* old_property, Property* new_property);
-
-bool update_property_by_id(Cursor* cursor, Property* old_property, Property* new_property);
 
 bool update_property_by_subject(Cursor* cursor, Property* old_property, Property* new_property);
 

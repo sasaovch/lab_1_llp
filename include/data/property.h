@@ -17,7 +17,7 @@ void* memget_property(void* element, char* stack, uint64_t* offset);
 
 uint32_t property_work_with_id(void* pr, uint32_t id, bool is_setter);
 
-bool compare_property_by_id(void* pr_1, void* pr_2);
+bool compare_property_by_subject(void* pr_1, void* pr_2);
 
 bool compare_subject_property(void* pr_1, void* pr_2) ;
 

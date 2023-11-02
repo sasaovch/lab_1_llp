@@ -156,7 +156,7 @@ bool update_relationship_by_id(Cursor* cursor, Relationship* old_relationship, R
     FunctionHelper* function_helper = (FunctionHelper*) malloc(sizeof(FunctionHelper));
     function_helper->condition = compare_id_relationship;
     function_helper->get_size_of_element = get_size_of_relationship;
-    function_helper->write_element_to_file = write_property_to_file;
+    function_helper->write_element_to_file = write_relationship_to_file;
     function_helper->read_big_element = read_relationship;
     function_helper->work_with_id = relationship_work_with_id;
     return update_element(cursor, old_relationship, new_relationship, RELATIONSHIP_SIZE, old_relationship->type, RELATIONSHIP, function_helper); 
@@ -165,7 +165,7 @@ bool update_relationship_by_child(Cursor* cursor, Relationship* old_relationship
     FunctionHelper* function_helper = (FunctionHelper*) malloc(sizeof(FunctionHelper));
     function_helper->condition = compare_child_relationship;
     function_helper->get_size_of_element = get_size_of_relationship;
-    function_helper->write_element_to_file = write_property_to_file;
+    function_helper->write_element_to_file = write_relationship_to_file;
     function_helper->read_big_element = read_relationship;
     function_helper->work_with_id = relationship_work_with_id;
     return update_element(cursor, old_relationship, new_relationship, RELATIONSHIP_SIZE, old_relationship->type, RELATIONSHIP, function_helper); 
@@ -174,7 +174,7 @@ bool update_relationship_by_parent(Cursor* cursor, Relationship* old_relationshi
     FunctionHelper* function_helper = (FunctionHelper*) malloc(sizeof(FunctionHelper));
     function_helper->condition = compare_parent_relationship;
     function_helper->get_size_of_element = get_size_of_relationship;
-    function_helper->write_element_to_file = write_property_to_file;
+    function_helper->write_element_to_file = write_relationship_to_file;
     function_helper->read_big_element = read_relationship;
     function_helper->work_with_id = relationship_work_with_id;
     return update_element(cursor, old_relationship, new_relationship, RELATIONSHIP_SIZE, old_relationship->type, RELATIONSHIP, function_helper); 
@@ -190,19 +190,9 @@ bool update_all_properties(Cursor* cursor, Property* old_property, Property* new
     return update_element(cursor, old_property, new_property, PROPERTY_SIZE, old_property->type, PROPERTY, function_helper); 
 }
 
-bool update_property_by_id(Cursor* cursor, Property* old_property, Property* new_property) {
-    FunctionHelper* function_helper = (FunctionHelper*) malloc(sizeof(FunctionHelper));
-    function_helper->condition = compare_property_by_id;
-    function_helper->get_size_of_element = get_size_of_property;
-    function_helper->write_element_to_file = write_property_to_file;
-    function_helper->read_big_element = read_property;
-    function_helper->work_with_id = property_work_with_id;
-    return update_element(cursor, old_property, new_property, PROPERTY_SIZE, old_property->type, PROPERTY, function_helper); 
-}
-
 bool update_property_by_subject(Cursor* cursor, Property* old_property, Property* new_property) {
     FunctionHelper* function_helper = (FunctionHelper*) malloc(sizeof(FunctionHelper));
-    function_helper->condition = compare_property_by_id;
+    function_helper->condition = compare_subject_property;
     function_helper->get_size_of_element = get_size_of_property;
     function_helper->write_element_to_file = write_property_to_file;
     function_helper->read_big_element = read_property;
@@ -212,7 +202,7 @@ bool update_property_by_subject(Cursor* cursor, Property* old_property, Property
 
 bool update_property_by_key(Cursor* cursor, Property* old_property, Property* new_property) {
     FunctionHelper* function_helper = (FunctionHelper*) malloc(sizeof(FunctionHelper));
-    function_helper->condition = compare_property_by_id;
+    function_helper->condition = compare_key_property;
     function_helper->get_size_of_element = get_size_of_property;
     function_helper->write_element_to_file = write_property_to_file;
     function_helper->read_big_element = read_property;
@@ -347,7 +337,7 @@ EntityIterator* select_properties_by_node(Cursor* cursor, Node* node) {
     Node* nd = (Node*) entity_iterator->iterator->element;
     Property* property = (Property*) malloc(PROPERTY_SIZE);
     property->subject_id = nd->id;
-    //strlcpy(property->subject_type, nd->type, (size_t)NAME_TYPE_WITH_TERM_LENGTH);
+    strlcpy(property->subject_type, nd->type, (size_t)NAME_TYPE_WITH_TERM_LENGTH);
     entity_iterator->iterator->helper = property;
 
     return entity_iterator;
@@ -371,7 +361,7 @@ EntityIterator* select_relationships_by_node(Cursor* cursor, Node* node) {
     Relationship* relationship = (Relationship*) malloc(RELATIONSHIP_SIZE);
     relationship->parent_id = nd->id;
     relationship->child_id = nd->id;
-    //strlcpy(relationship->parent_type, nd->type, (size_t)NAME_TYPE_WITH_TERM_LENGTH);
+    strlcpy(relationship->parent_type, nd->type, (size_t)NAME_TYPE_WITH_TERM_LENGTH);
     entity_iterator->iterator->helper = relationship;
 
     return entity_iterator;

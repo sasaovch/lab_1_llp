@@ -1,6 +1,4 @@
 #include "../../include/data/iterator.h"
-#include "data/relationship.h"
-#include "data/util_data.h"
 #include <stdint.h>
 #include <stdlib.h>
 

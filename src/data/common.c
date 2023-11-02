@@ -1,7 +1,4 @@
 #include "../../include/include.h"
-#include "data/constants.h"
-#include <stdint.h>
-#include <stdlib.h>
 
 uint32_t* create_element(
     Cursor* cursor, void* element,
@@ -278,8 +275,7 @@ void remove_bid_element(
     set_pointer_offset_file(cursor->file, *pointer + TYPE_OF_ELEMENT_SIZE + VALUE_TYPE_SIZE + UINT32_T_SIZE);
     write_to_file(cursor->file, &(deleted_blocks[blocks_to_empty]), UINT32_T_SIZE);
     if (is_cut) {
-        // int result = ftruncate(cursor->file->file_descriptor, (cursor->number_of_pages + 1) * PAGE_SIZE);
-        // error_exit(result, "Failed to clear the file.\n");
+        truncate_file(cursor, (cursor->number_of_pages + 1) * PAGE_SIZE);
         set_pointer_offset_file(cursor->file, deleted_blocks[blocks_to_empty] * PAGE_SIZE + UINT32_T_SIZE);
         write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
     }
@@ -379,7 +375,6 @@ bool update_element(
     Page* page = (Page*) malloc(sizeof(Page));
     PageHeader* page_header = (PageHeader*) malloc(PAGE_HEADER_SIZE);
     
-
     entity = get_entity(cursor, element_type, type, &(pointer), entity);
     if (entity == NULL) {
         println("Error to find Node with name %s", type);
@@ -435,7 +430,6 @@ bool update_element(
         }
         free(find_el);
         find_el = find_element(cursor, entity, page, size_of_sturcture, old_element, &(offset),  function_helper);
-
     }
 
     for (uint32_t i = 0; i < stack_pointer; i++) {

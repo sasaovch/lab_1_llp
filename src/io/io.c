@@ -145,3 +145,9 @@ void write_type_to_file(Cursor* cursor, char* type) {
 void write_string_to_file(Cursor* cursor, char* string, uint32_t length) {
     write_to_file(cursor->file, string, CHAR_SIZE * length);
 }
+
+void truncate_file(Cursor* cursor, uint64_t offset) {
+    uint32_t file_descriptor = fileno(cursor->file->file);
+    int result = ftruncate(file_descriptor, offset);
+    error_exit(result, "Failed to clear the file.\n");
+}

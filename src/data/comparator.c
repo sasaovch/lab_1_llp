@@ -1,5 +1,5 @@
 #include "../../include/data/comparator.h"
-#include "data/data.h"
+#include "../../include/data/data.h"
 
 bool is_less(void* v1, void* v2, ValueType type) {
     switch (type) {

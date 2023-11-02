@@ -1,10 +1,6 @@
 #ifndef LAB_1_UTIL_DATA_H
 #define LAB_1_UTIL_DATA_H
 
-#include "data.h"
-#include <stdint.h>
-#include <stdio.h>
-
 #ifdef _WIN32
 #include <io.h>
 #define F_OK 0
@@ -12,6 +8,9 @@
 #else
 #include <unistd.h>
 #endif
+
+#include "data.h"
+#include <stdio.h>
 
 typedef struct {
     FILE* file;

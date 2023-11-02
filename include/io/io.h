@@ -1,11 +1,9 @@
 #ifndef LAB_1_IO
 #define LAB_1_IO
 
-// #include <stdio.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <stdlib.h>
-// #include <unistd.h>
-// #include <fcntl.h>
 
 #include "../data/data.h"
 #include "../data/util_data.h"
@@ -29,6 +27,8 @@ void write_to_file(File* file, const void* write_buf, uint64_t size);
 uint64_t get_page_offset(Cursor* cursor);
 
 void flush_page(Cursor* cursor);
+
+void truncate_file(Cursor* cursor, uint64_t offset);
 
 void db_close(Cursor* cursor);
 
