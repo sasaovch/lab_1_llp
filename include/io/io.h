@@ -1,11 +1,11 @@
 #ifndef LAB_1_IO
 #define LAB_1_IO
 
-#include <stdio.h>
+// #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
+// #include <unistd.h>
+// #include <fcntl.h>
 
 #include "../data/data.h"
 #include "../data/util_data.h"

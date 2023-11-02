@@ -1,6 +1,7 @@
 #include "../../include/io/io.h"
 #include "../../include/data/constants.h"
 
+
 void println(const char *line, ...) {
     va_list args;
     va_start(args, line);
@@ -30,8 +31,8 @@ void debug(int num, const char *line, ...) {
 }
 
 void read_from_file(File* file, void* read_buf, uint64_t size) {
-    ssize_t bytes_read = read(file->file_descriptor, read_buf, size);
-    error_exit(bytes_read, "Error reading from file %s", file->file_descriptor);
+    ssize_t bytes_read = fread(read_buf, size, 1, file->file);
+    error_exit(bytes_read, "Error reading from file");
 }
 
 void fail_print(const char *line, ...) {
@@ -52,7 +53,7 @@ uint32_t find_last_entity(uint64_t file_length, Page* page, File* file) {
     uint32_t last_block_number = 0;
     do {
         last_block_number = page->page_header->next_block;
-        lseek(file->file_descriptor, page->page_header->next_block * PAGE_SIZE, SEEK_SET);
+        fseek(file->file, page->page_header->next_block * PAGE_SIZE, SEEK_SET);
         read_from_file(file, page->page_header, PAGE_HEADER_SIZE);
     } while (page->page_header->next_block != 0);
 
@@ -61,15 +62,12 @@ uint32_t find_last_entity(uint64_t file_length, Page* page, File* file) {
 }
 
 Cursor* db_open(const char* filename) {
-    int fd = open(filename,
-                O_RDWR |      // Read/Write mode
-                    O_CREAT,  // Create file if it does not exist
-                S_IWUSR |     // User write permission
-                    S_IRUSR   // User read permission
-    );
+    FILE* f = fopen(filename, "rb+");
+    if (f == NULL) {
+        error_exit(-1, "Unabled to open file");
+    }
 
-    error_exit(fd, "Unabled to open file");
-    off_t file_length = lseek(fd, 0, SEEK_END); // find end of file
+    off_t file_length = fseek(f, 0, SEEK_END);
     error_exit(file_length, "Failed to find end of file");
     
     File* file = (File*) malloc(sizeof(File));
@@ -79,7 +77,7 @@ Cursor* db_open(const char* filename) {
 
     void* page_body = malloc(PAGE_BODY_SIZE);
 
-    file->file_descriptor = fd;
+    file->file = f;
     file->file_length = file_length;
 
     page->body = page_body;
@@ -98,12 +96,12 @@ Cursor* db_open(const char* filename) {
 }
 
 void set_pointer_offset_file(File* file, uint64_t offset) {
-    off_t offs = lseek(file->file_descriptor, offset, SEEK_SET);
+    off_t offs = fseek(file->file, offset, SEEK_SET);
     error_exit(offs, "Error seeking offset");
 }
 
 void write_to_file(File* file, const void* write_buf, uint64_t size) {
-    ssize_t bytes_written = write(file->file_descriptor, write_buf, size);
+    ssize_t bytes_written = fwrite(write_buf, size, 1, file->file);
     error_exit(bytes_written, "Error writing to file");
 }
 
@@ -118,7 +116,7 @@ void flush_page(Cursor* cursor) {
 }
 
 void db_close(Cursor* cursor) {
-    close(cursor->file->file_descriptor);
+    fclose(cursor->file->file);
     free(cursor->file);
     free(cursor->page->page_header);
     free(cursor->page->body);
