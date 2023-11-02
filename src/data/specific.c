@@ -1,4 +1,5 @@
 #include "../../include/include.h"
+#include "data/constants.h"
 #include "data/iterator.h"
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -8,7 +9,7 @@ uint32_t* check_constraints_create_relationship(
 ) {
     Node* nd = (Node*) malloc(NODE_SIZE);
     nd->id = relationship->parent_id;
-    strcpy(nd->type, relationship->parent_type);
+    strncpy(nd->type, relationship->parent_type, NAME_TYPE_WITH_TERM_LENGTH);
     
     Iterator* iter = select_node_by_id(cursor, nd);
     if (!has_next(iter)) {
@@ -16,7 +17,7 @@ uint32_t* check_constraints_create_relationship(
     }
 
     nd->id = relationship->child_id;
-    strcpy(nd->type, relationship->child_type);
+    strncpy(nd->type, relationship->child_type, NAME_TYPE_WITH_TERM_LENGTH);
 
     iter = select_node_by_id(cursor, nd);
     if (!has_next(iter)) {
@@ -35,7 +36,7 @@ uint32_t* check_constraints_create_property(
 ) {
     Node* nd = (Node*) malloc(NODE_SIZE);
     nd->id = property->subject_id;
-    strcpy(nd->type, property->subject_type);
+    strncpy(nd->type, property->subject_type, NAME_TYPE_WITH_TERM_LENGTH);
     
     Iterator* iter = select_node_by_id(cursor, nd);
     if (!has_next(iter)) {

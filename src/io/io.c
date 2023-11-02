@@ -62,6 +62,17 @@ uint32_t find_last_entity(uint64_t file_length, Page* page, File* file) {
 }
 
 Cursor* db_open(const char* filename) {
+    bool file_exists = access(filename, F_OK) == 0;
+    // try to read the file
+    if (!file_exists) {
+        println("File %s doesn't exist", filename);
+
+        FILE* f = fopen(filename, "w");
+        if (f == NULL) {
+            println("Can't create file");
+        }
+        error_exit(fclose(f), "Error while closing file");
+    }
     FILE* f = fopen(filename, "rb+");
     if (f == NULL) {
         error_exit(-1, "Unabled to open file");
