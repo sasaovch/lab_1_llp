@@ -1,5 +1,6 @@
 #include "../../include/io/io.h"
 #include "../../include/data/constants.h"
+#include <stdint.h>
 
 
 void println(const char *line, ...) {
@@ -31,7 +32,7 @@ void debug(int num, const char *line, ...) {
 }
 
 void read_from_file(File* file, void* read_buf, uint64_t size) {
-    ssize_t bytes_read = fread(read_buf, size, 1, file->file);
+    uint32_t bytes_read = fread(read_buf, size, 1, file->file);
     error_exit(bytes_read, "Error reading from file");
 }
 
@@ -78,7 +79,7 @@ Cursor* db_open(const char* filename) {
         error_exit(-1, "Unabled to open file");
     }
 
-    off_t file_length = fseek(f, 0, SEEK_END);
+    uint64_t file_length = fseek(f, 0, SEEK_END);
     error_exit(file_length, "Failed to find end of file");
     
     File* file = (File*) malloc(sizeof(File));
@@ -107,12 +108,12 @@ Cursor* db_open(const char* filename) {
 }
 
 void set_pointer_offset_file(File* file, uint64_t offset) {
-    off_t offs = fseek(file->file, offset, SEEK_SET);
+    uint64_t offs = fseek(file->file, offset, SEEK_SET);
     error_exit(offs, "Error seeking offset");
 }
 
 void write_to_file(File* file, const void* write_buf, uint64_t size) {
-    ssize_t bytes_written = fwrite(write_buf, size, 1, file->file);
+    uint32_t bytes_written = fwrite(write_buf, size, 1, file->file);
     error_exit(bytes_written, "Error writing to file");
 }
 
