@@ -1,4 +1,6 @@
 #include "../../include/data/type.h"
+#include "../../include/io/io.h"
+#include "../../include/utils/page_utils.h"
 
 
 void print_type(Entity* entity) {

@@ -1,4 +1,5 @@
 #include "../../include/io/io.h"
+#include "../../include/utils/page_utils.h"
 #include "../../include/data/constants.h"
 #include <stdlib.h>
 
@@ -46,7 +47,6 @@ void remove_blocks(Cursor* cursor, uint32_t counter, uint32_t* stack) {
         }
     }
     free(empty_body);
-    truncate_file(cursor, (cursor->number_of_pages + 1) * PAGE_SIZE);
 }
 
 uint64_t erase_entity(Cursor* cursor, uint64_t* pointer) {
@@ -94,7 +94,6 @@ void remove_emtpy_blocks(Cursor* cursor, PageHeader* page_header) {
             set_pointer_offset_file(cursor->file, cursor->number_of_pages * PAGE_SIZE);
             read_from_file(cursor->file, page_header, PAGE_HEADER_SIZE);
         }
-        truncate_file(cursor, (cursor->number_of_pages + 1) * PAGE_SIZE);
     }
     free(empty_block);
 }
@@ -225,7 +224,6 @@ void cut_blocks(Cursor* cursor, const PageHeader* page_header, const uint64_t* p
         set_pointer_offset_file(cursor->file, pre_last_block * PAGE_SIZE + UINT32_T_SIZE);
         write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
 
-        truncate_file(cursor, (cursor->number_of_pages + 1) * PAGE_SIZE);
     } else {
         set_pointer_offset_file(cursor->file, *pointer + TYPE_OF_ELEMENT_SIZE + VALUE_TYPE_SIZE + UINT32_T_SIZE);
         write_to_file(cursor->file, &(last_block), UINT32_T_SIZE);

@@ -19,4 +19,8 @@ void write_big_string_to_file(Cursor* cursor, PageHeader* page_header, Entity* e
 
 void read_big_string_from_file(Cursor* cursor, PageHeader* page_header, char* body, char* string, uint32_t length, uint64_t* offset, uint32_t* read_block) ;
 
+void delete_relationship_iter(EntityIterator* entity_iterator);
+
+void delete_property_iter(EntityIterator* entity_iterator);
+
 #endif

@@ -28,8 +28,6 @@ uint64_t get_page_offset(Cursor* cursor);
 
 void flush_page(Cursor* cursor);
 
-void truncate_file(Cursor* cursor, uint64_t offset);
-
 void db_close(Cursor* cursor);
 
 void write_uint_32_to_file(Cursor* cursor, uint32_t number);
@@ -38,7 +36,6 @@ void write_type_to_file(Cursor* cursor, char* type);
 
 void write_string_to_file(Cursor* cursor, char* string, uint32_t length);
 
-void fail_print(const char *line, ...);
-
+void print_test_format(const char *line, ...);
 
 #endif

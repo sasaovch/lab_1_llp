@@ -2,7 +2,6 @@
 #define LAB_1_CRUD_H
 
 #include "common.h"
-#include "data.h"
 
 uint32_t* create_node(Cursor* cursor, Node* node);
 

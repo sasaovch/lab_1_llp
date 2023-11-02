@@ -1,10 +1,9 @@
-#include "../../include/test_data.h"
-#include "time.h"
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+#include "../../include/utils/test_utils.h"
+#include "../../include/include.h"
 
-void create_entity(Cursor* cursor) {
+#include "time.h"
+
+bool create_entity(Cursor* cursor) {
     Entity data[] = {
         {NODE, VOID, 0, 0, 0, "person"},
         { RELATIONSHIP, VOID,  0, 0, 0,"play"},
@@ -17,12 +16,14 @@ void create_entity(Cursor* cursor) {
     int count_to_write = sizeof(data) / ENTITY_SIZE;
     for (int i = 0; i < count_to_write; i++) {
         if (!create_type(cursor, &(data[i]))) {
-            fail_print("Fail to create Entity %i", i);
+            print_test_format("Fail to create Entity %i", i);
+            return false;
         };
     }
+    return true;
 }
 
-void create_entity_1(Cursor* cursor) {
+bool create_entity_1(Cursor* cursor) {
     Entity data[] = {
         {NODE,  VOID, 0, 0, 0, "pc"},
         { RELATIONSHIP, VOID,  0, 0, 11110,"brother"},
@@ -40,18 +41,21 @@ void create_entity_1(Cursor* cursor) {
     int count_to_write = sizeof(data) / ENTITY_SIZE;
     for (int i = 0; i < count_to_write; i++) {
         if (!create_type(cursor, &(data[i]))) {
-            fail_print("Fail to create Entity %i", i);
+            print_test_format("Fail to create Entity %i", i);
+            return false;
         };
     }
     count_to_write = sizeof(duplicate_data) / ENTITY_SIZE;
     for (int i = 0; i < count_to_write; i++) {
         if (create_type(cursor, &(duplicate_data[i]))) {
-            fail_print("Fail, created duplicate Entity %i", i);
+            print_test_format("Fail, created duplicate Entity %i", i);
+            return false;
         };
     }
+    return true;
 }
 
-void create_nodes(Cursor* cursor) {
+bool create_nodes(Cursor* cursor) {
     char* name = (char*) malloc(PAGE_SIZE + PAGE_BODY_SIZE);
     for (uint32_t i = 0; i < PAGE_SIZE + PAGE_BODY_SIZE - 1; i++) {
         name[i] = 'a';
@@ -72,7 +76,8 @@ void create_nodes(Cursor* cursor) {
     for (int i = 0; i < count_to_write; i++) {
         uint32_t* id = create_node(cursor, &(nodes[i]));
         if (id == NULL) {
-            fail_print("Fail to create Node %i", i);
+            free(id);
+            print_test_format("Fail to create Node %i", i);
         };
         free(id);
     }
@@ -80,13 +85,16 @@ void create_nodes(Cursor* cursor) {
     for (int i = 0; i < count_to_write; i++) {
         uint32_t* id = create_node(cursor, &(non_existing_node[i]));
         if (id != NULL) {
-            fail_print("Fail, created Node with non existing type");
+            free(id);
+            print_test_format("Fail, created Node with non existing type");
+            return false;
         };
         free(id);
     }
+    return true;
 }
 
-void create_nodes_1(Cursor* cursor) {
+bool create_nodes_1(Cursor* cursor) {
     char* name1 = (char*) malloc(PAGE_SIZE + PAGE_BODY_SIZE);
     for (uint32_t i = 0; i < PAGE_SIZE + PAGE_BODY_SIZE - 1; i++) {
         name1[i] = 'b';
@@ -107,13 +115,16 @@ void create_nodes_1(Cursor* cursor) {
     for (int i = 0; i < count_to_write; i++) {
         uint32_t* id = create_node(cursor, &(nodes[i]));
         if (id == NULL) {
-            fail_print("Fail to create Node %i", i);
+            free(id);
+            print_test_format("Fail to create Node %i", i);
+            return false;
         };
         free(id);
     }
+    return true;
 }
 
-void create_relationships(Cursor* cursor) {
+bool create_relationships(Cursor* cursor) {
     Relationship relationships[] = {
         {0, 0 , 0, "drive", "person", "car"},
         {0, 1 ,1, "some", "person", "pc"},
@@ -121,24 +132,29 @@ void create_relationships(Cursor* cursor) {
     };
     uint32_t* id = create_relationship(cursor, &(relationships[0]));
     if (id == NULL) {
-        fail_print("Fail to create Relationship 0");
+        free(id);
+        print_test_format("Fail to create Relationship 0");
+        return false;
     };
     free(id);
 
     id = create_relationship(cursor, &(relationships[1]));
     if (id != NULL) {
-        fail_print("Fail, created Relationship with non existing type");
         free(id);
+        print_test_format("Fail, created Relationship with non existing type");
+        return false;
     };
 
     id = create_relationship(cursor, &(relationships[2]));
     if (id != NULL) {
-        fail_print("Fail, created Relationship with non existing parent node id");
         free(id);
+        print_test_format("Fail, created Relationship with non existing parent node id");
+        return false;
     };
+    return true;
 }
 
-void create_relationships_1(Cursor* cursor) {
+bool create_relationships_1(Cursor* cursor) {
     Relationship relationships[] = {
         {0, 0, 0, "play", "person", "pc"},
         {0, 1,0, "play", "person", "pc"},
@@ -151,13 +167,16 @@ void create_relationships_1(Cursor* cursor) {
     for (int i = 0; i < count_to_write; i++) {
         uint32_t* id = create_relationship(cursor, &(relationships[i]));
         if (id == NULL) {
-            fail_print("Fail to creat Relationship %i", i);
+            free(id);
+            print_test_format("Fail to creat Relationship %i", i);
+            return false;
         };
         free(id);
     }
+    return true;
 }
 
-void create_properties(Cursor* cursor) {
+bool create_properties(Cursor* cursor) {
     uint32_t age = 20;
     float fl = 1.1f;
     Property property[] = {
@@ -176,7 +195,9 @@ void create_properties(Cursor* cursor) {
     for (int i = 0; i < count_to_write; i++) {
         uint32_t* id = create_property(cursor, &(property[i]));
         if (id == NULL) {
-            fail_print("Fail to creat Property %i", i);
+            free(id);
+            print_test_format("Fail to creat Property %i", i);
+            return false;
         };
         free(id);
     }
@@ -184,13 +205,15 @@ void create_properties(Cursor* cursor) {
     for (int i = 0; i < count_to_write; i++) {
         uint32_t* id = create_property(cursor, &(wrong_property[i]));
         if (id != NULL) {
-            fail_print("Fail, created wrong Property %i", i);
             free(id);
+            print_test_format("Fail, created wrong Property %i", i);
+            return false;
         };
     }
+    return true;
 }
 
-void delete_entity(Cursor* cursor) {
+bool delete_entity(Cursor* cursor) {
     Entity data[] = {
         {NODE, VOID, 0, 0,0, "car"},
     };
@@ -199,68 +222,86 @@ void delete_entity(Cursor* cursor) {
     for (int i = 0; i < count_to_write; i++) {
         delete_type(cursor, &(data[i]));
     }
+    return true;
 }
 
-void delete_nodes(Cursor* cursor) {
+bool delete_nodes(Cursor* cursor) {
     Node node = {
         0, 9, "person", ""
     };
     
     if (!delete_node_with_others(cursor, &(node))) {
-        fail_print("Failed to delete node");
+        print_test_format("Failed to delete node");
+        return false;
     };
 
     Iterator* iterator = select_node_by_id(cursor, &(node));
     if (has_next(iterator)) {
-        fail_print("Fail, node wasn't deleted");
+        free_iter(iterator);
+        print_test_format("Fail, node wasn't deleted");
+        return false;
     }
 
     if (delete_node_by_id(cursor, &(node))) {
-        fail_print("Deleted non existing node");
+        free_iter(iterator);
+        print_test_format("Deleted non existing node");
+        return false;
     }
     free_iter(iterator);
+    return true;
 }
 
-void delete_relationships(Cursor* cursor) {
+bool delete_relationships(Cursor* cursor) {
     Relationship non_exist_relationship = {
         100,0, 0, "play", "", ""
     };
     Relationship relationship = {1, 1,2, "play", "person", "pc"};
     
     if (delete_relationship_by_id(cursor, &(non_exist_relationship))) {
-        fail_print("Failed to delete relationship");
+        print_test_format("Failed to delete relationship");
+        return false;
     };
     
     if (!delete_relationship_by_id(cursor, &(relationship))) {
-        fail_print("Failed to delete relationship");
+        print_test_format("Failed to delete relationship");
+        return false;
     };
 
     Iterator* iterator = select_relationship_by_id(cursor, &(relationship));
     if (has_next(iterator)) {
-        fail_print("Fail, deleted non existing relationship");
+        free_iter(iterator);
+        print_test_format("Fail, deleted non existing relationship");
+        return false;
     }
 
     if (delete_relationship_by_id(cursor, &(relationship))) {
-        fail_print("Deleted non existing relationship");
+        free_iter(iterator);
+        print_test_format("Deleted non existing relationship");
+        return false;
     };
     free_iter(iterator);
+    return true;
 }
 
-void delete_properties(Cursor* cursor) {
+bool delete_properties(Cursor* cursor) {
     uint32_t age = 20;
     Property property = {INT,2, UINT32_T_SIZE, "age","person",  &(age)};
 
     if (!delete_property_by_subject(cursor, &(property))) {
-        fail_print("Failed to delete property");
+        print_test_format("Failed to delete property");
+        return false;
     };
     Iterator* iterator = select_property_by_subject(cursor, &(property));
     if (has_next(iterator)) {
-        fail_print("Fail, deleted non existing property");
+        free_iter(iterator);
+        print_test_format("Fail, deleted non existing property");
+        return false;
     }
     free_iter(iterator);
+    return true;
 }
 
-void update_nodes(Cursor* cursor) {
+bool update_nodes(Cursor* cursor) {
     Node old_nodes[] = {
         {3, 9,"person", "sasaovch"},
     };
@@ -272,22 +313,28 @@ void update_nodes(Cursor* cursor) {
     int count_to_write = sizeof(old_nodes) / sizeof(Node);
     for (int i = 0; i < count_to_write; i++) {
         if (!update_node_by_id(cursor, &(old_nodes[i]), &(new_nodes[i]))) {
-            fail_print("Fail to update node %i", i);
+            print_test_format("Fail to update node %i", i);
+            return false;
         }; 
     }
 
     Iterator* iterator = select_node_by_id(cursor, &(old_nodes[0]));
     if (!has_next(iterator)) {
-        fail_print("Fail, not found updated node");
-        return;
+        free_iter(iterator);
+        print_test_format("Fail, not found updated node");
+        return false;
     }
     Node* nd = (Node*) next(iterator);
     if (strcmp(nd->name, new_nodes[0].name) != 0) {
-        fail_print("Fail, wasn't updated node");
+        free_iter(iterator);
+        print_test_format("Fail, wasn't updated node");
+        return false;
     }
+    free_iter(iterator);
+    return true;
 }
 
-void update_relationships(Cursor* cursor) {
+bool update_relationships(Cursor* cursor) {
     Relationship old_relationships[] = {
         {2, 3,2, "play", "person", "pc"},
     };
@@ -298,22 +345,28 @@ void update_relationships(Cursor* cursor) {
     int count_to_write = sizeof(old_relationships) / sizeof(Relationship);
     for (int i = 0; i < count_to_write; i++) {
         if (!update_relationship_by_id(cursor, &(old_relationships[i]), &(new_relationships[i]))) {
-            fail_print("Fail to update relationship %i", i);
+            print_test_format("Fail to update relationship %i", i);
+            return false;
         }; 
     }
 
     Iterator* iterator = select_relationship_by_id(cursor, &(old_relationships[0]));
     if (!has_next(iterator)) {
-        fail_print("Fail, not found updated relationship");
-        return;
+        free_iter(iterator);
+        print_test_format("Fail, not found updated relationship");
+        return false;
     }
     Relationship* rel = (Relationship*) next(iterator);
     if (rel->child_id != new_relationships[0].child_id) {
-        fail_print("Fail, wasn't updated relationship");
+        free_iter(iterator);
+        print_test_format("Fail, wasn't updated relationship");
+        return false;
     }
+    free_iter(iterator);
+    return true;
 }
 
-void update_properties(Cursor* cursor) {
+bool update_properties(Cursor* cursor) {
     uint32_t age = 20;
     uint32_t new_age = 21;
     Property old_property[] = {
@@ -326,20 +379,25 @@ void update_properties(Cursor* cursor) {
     int count_to_write = sizeof(old_property) / sizeof(Property);
     for (int i = 0; i < count_to_write; i++) {
         if (!update_property_by_subject(cursor, &(old_property[i]), &(new_property[i]))) {
-            fail_print("Fail to update property %i", i);
+            print_test_format("Fail to update property %i", i);
+            return false;
         }; 
     }
 
     Iterator* iterator = select_property_by_subject(cursor, &(old_property[0]));
     if (!has_next(iterator)) {
-        fail_print("Fail, not found updated property");
-        return;
+        free_iter(iterator);
+        print_test_format("Fail, not found updated property");
+        return false;
     }
 
     Property* prop = (Property*) next(iterator);
     if (*((uint32_t*)prop->value) != *((uint32_t*)new_property[0].value)) {
-        fail_print("Fail, wasn't updated property");
+        free_iter(iterator);
+        print_test_format("Fail, wasn't updated property");
+        return false;
     }
+    return true;
 }
 
 void select_node(Cursor* cursor) {
@@ -360,12 +418,6 @@ void select_node(Cursor* cursor) {
 }
 
 void select_relationship(Cursor* cursor) {
-    Entity data[] = {
-        { RELATIONSHIP, VOID,  0, 0, 11110,"brother"},
-        { RELATIONSHIP, VOID,  0, 0, 11110,"call"},
-        { RELATIONSHIP, VOID,  0, 0, 110,"play"},
-        { RELATIONSHIP, VOID,  0, 0, 110,"drive"},
-    };
     Relationship rel = {0, 2, 0, "", "", ""};
     for (int i = 0; i < 4; i++) {
         Iterator* iterator = select_all_relationships(cursor, &(rel));
@@ -410,37 +462,53 @@ void select_relationships_by_node_t(Cursor* cursor) {
     }
 }
 
-void create_test(Cursor* cursor) {
-    fail_print("Start to create");
-    create_entity(cursor);
-    create_nodes(cursor);
-    create_relationships(cursor);
-    create_properties(cursor);
-    
-    create_entity_1(cursor);
-    create_nodes_1(cursor);
-    create_relationships_1(cursor);
-    fail_print("Created");
+bool create_test(Cursor* cursor) {
+    print_test_format("Start to create");
+    bool result = create_entity(cursor) &&
+        create_nodes(cursor) &&
+        create_relationships(cursor) &&
+        create_properties(cursor) &&
+        
+        create_entity_1(cursor) &&
+        create_nodes_1(cursor) &&
+        create_relationships_1(cursor);
+    if (result) {
+        print_test_format("Created successfuly");
+    } else {
+        print_test_format("Failed to create elments");
+    }
+    return result;
 }
 
-void delete_test(Cursor* cursor) {
-    fail_print("Start to delete");
-    delete_nodes(cursor);
-    fail_print("Delete Node");
-    delete_relationships(cursor);
-    fail_print("Delete Relationships");
-    delete_properties(cursor);
-    fail_print("Delete Property");
-    delete_entity(cursor);
-    fail_print("Deleted");
+bool delete_test(Cursor* cursor) {
+    print_test_format("Start to delete");
+    bool result = delete_nodes(cursor);
+    print_test_format("Delete Node");
+    result = result && delete_relationships(cursor);
+    print_test_format("Delete Relationships");
+    result = result && delete_properties(cursor);
+    print_test_format("Delete Property");
+    result = result && delete_entity(cursor);
+    if (result) {
+        print_test_format("Deleted successfuly");
+    } else {
+        print_test_format("Failed to delete");
+    }
+    return result;
 }
 
-void update_test(Cursor* cursor) {
-    fail_print("Start to update");
-    update_nodes(cursor);
-    update_relationships(cursor);
-    update_properties(cursor);
-    fail_print("Updated");
+bool update_test(Cursor* cursor) {
+    print_test_format("Start to update");
+    bool result = update_nodes(cursor) &&
+        update_relationships(cursor) &&
+        update_properties(cursor);
+
+    if (result) {
+        print_test_format("Updated successfuly");
+    } else {
+        print_test_format("Failed to update");
+    }
+    return result;
 }
 
 void select_test(Cursor* cursor) {
@@ -451,7 +519,7 @@ void select_test(Cursor* cursor) {
     select_relationships_by_node_t(cursor);
 }
 
-void prepare_smoke(Cursor* cursor) {
+static void prepare_smoke(Cursor* cursor) {
     Entity data[] = {
         {NODE, 0, 0, 0, 0, "person"},
         {NODE, 0, 0, 0, 0, "pc"},
@@ -477,7 +545,7 @@ void prepare_smoke(Cursor* cursor) {
     }
 }
 
-void create_node_smoke(Cursor* cursor, int num) {
+static void create_node_smoke(Cursor* cursor, int num) {
     char* types[] = {
         "person", 
         "pc",

@@ -3,7 +3,6 @@
 
 #include "../io/io.h"
 
-
 uint32_t* find_all_blocks_to_delete(Cursor* cursor, uint32_t* counter, Entity* entity);
 
 void remove_blocks(Cursor* cursor, uint32_t counter, uint32_t* stack);
@@ -18,8 +17,8 @@ void create_new_page(Cursor* cursor, PageHeader* page_header, uint64_t curr_tabl
 
 uint32_t remove_empty_block(Cursor* cursor, PageHeader* first_header, PageHeader* second_header);
 
-uint32_t find_block_before(Cursor* cursor, PageHeader* page_header, Entity* entity);
+uint32_t find_block_before(Cursor* cursor, const PageHeader* page_header, const Entity* entity);
 
-void cut_blocks(Cursor* cursor, PageHeader* page_header, uint64_t* pointer, Entity* entity);
+void cut_blocks(Cursor* cursor, const PageHeader* page_header, const uint64_t* pointer, const Entity* entity);
 
 #endif

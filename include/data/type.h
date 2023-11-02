@@ -2,7 +2,7 @@
 #define LAB_1_TYPE_H
 
 #include "./data.h"
-#include "./page_utils.h"
+#include "./util_data.h"
 
 void print_type(Entity* entity);
 

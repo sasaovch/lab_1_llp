@@ -164,22 +164,6 @@ bool compare_key_property(void* pr_1, void* pr_2) {
     return property_1->subject_id == property_2->subject_id;
 }
 
-bool is_value_greater(void* pr_1, void* pr_2) {
-    Property* property_1 = (Property*) pr_1;
-    Property* property_2 = (Property*) pr_2;
-    return is_greater(property_1->value, property_2->value, property_1->value_type);
-}
-bool is_value_less(void* pr_1, void* pr_2) {
-    Property* property_1 = (Property*) pr_1;
-    Property* property_2 = (Property*) pr_2;
-    return is_less(property_1->value, property_2->value, property_1->value_type);
-}
-bool is_value_equal(void* pr_1, void* pr_2) {
-    Property* property_1 = (Property*) pr_1;
-    Property* property_2 = (Property*) pr_2;
-    return is_equal(property_1->value, property_2->value, property_1->value_type);
-}
-
 void memcpy_property(void* element, char* stack, uint64_t* offset) {
     Property* property = (Property*) element;
 

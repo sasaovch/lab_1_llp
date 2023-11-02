@@ -1,5 +1,5 @@
 #include "../../include/include.h"
-#include <string.h>
+#include "../../include/utils/page_utils.h"
 
 #define _CRT_SECURE_NO_WARNINGS
 uint32_t* check_constraints_create_relationship(

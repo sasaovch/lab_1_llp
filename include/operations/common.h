@@ -1,8 +1,7 @@
 #ifndef LAB_1_COMMON_H
 #define LAB_1_COMMON_H
 
-#include "./type.h"
-#include "data.h"
+#include "../data/type.h"
 
 uint32_t* create_element(
     Cursor* cursor, void* element,

@@ -36,7 +36,7 @@ void read_from_file(File* file, void* read_buf, uint64_t size) {
     error_exit(bytes_read, "Error reading from file");
 }
 
-void fail_print(const char *line, ...) {
+void print_test_format(const char *line, ...) {
     println("---------------------------");
     va_list args;
     va_start(args, line);
@@ -144,10 +144,4 @@ void write_type_to_file(Cursor* cursor, char* type) {
 }
 void write_string_to_file(Cursor* cursor, char* string, uint32_t length) {
     write_to_file(cursor->file, string, CHAR_SIZE * length);
-}
-
-void truncate_file(Cursor* cursor, uint64_t offset) {
-    uint32_t file_descriptor = fileno(cursor->file->file);
-    int result = ftruncate(file_descriptor, offset);
-    error_exit(result, "Failed to clear the file.\n");
 }
