@@ -10,7 +10,7 @@ uint32_t* check_constraints_create_relationship(
 ) {
     Node* nd = (Node*) malloc(NODE_SIZE);
     nd->id = relationship->parent_id;
-    strlcpy(nd->type, relationship->parent_type, (size_t)NAME_TYPE_WITH_TERM_LENGTH);
+    //strlcpy(nd->type, relationship->parent_type, (size_t)NAME_TYPE_WITH_TERM_LENGTH);
     
     Iterator* iter = select_node_by_id(cursor, nd);
     if (!has_next(iter)) {
@@ -18,7 +18,7 @@ uint32_t* check_constraints_create_relationship(
     }
 
     nd->id = relationship->child_id;
-    strlcpy(nd->type, relationship->child_type, (size_t)NAME_TYPE_WITH_TERM_LENGTH);
+    //strlcpy(nd->type, relationship->child_type, (size_t)NAME_TYPE_WITH_TERM_LENGTH);
 
     iter = select_node_by_id(cursor, nd);
     if (!has_next(iter)) {
@@ -37,7 +37,7 @@ uint32_t* check_constraints_create_property(
 ) {
     Node* nd = (Node*) malloc(NODE_SIZE);
     nd->id = property->subject_id;
-    strlcpy(nd->type, property->subject_type, (size_t)NAME_TYPE_WITH_TERM_LENGTH);
+    //strlcpy(nd->type, property->subject_type, (size_t)NAME_TYPE_WITH_TERM_LENGTH);
     
     Iterator* iter = select_node_by_id(cursor, nd);
     if (!has_next(iter)) {
