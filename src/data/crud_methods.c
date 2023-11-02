@@ -6,6 +6,8 @@
 #include "data/relationship.h"
 #include <string.h>
 
+#define _CRT_SECURE_NO_WARNINGS
+
 
 uint32_t* create_node(Cursor* cursor, Node* node) {
     FunctionHelper* function_helper = (FunctionHelper*) malloc(sizeof(FunctionHelper));

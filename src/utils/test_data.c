@@ -6,7 +6,7 @@
 #include "time.h"
 #include <stdint.h>
 #include <stdlib.h>
-
+#define _CRT_SECURE_NO_WARNINGS
 
 void create_entity(Cursor* cursor) {
     Entity data[] = {
