@@ -1,12 +1,4 @@
 #include "../../include/include.h"
-#include "data/comparator.h"
-#include "data/constants.h"
-#include "data/iterator.h"
-#include "data/node.h"
-#include "data/relationship.h"
-#include <string.h>
-
-#define _CRT_SECURE_NO_WARNINGS
 
 
 uint32_t* create_node(Cursor* cursor, Node* node) {
