@@ -1,6 +1,7 @@
 #include "../../include/include.h"
 #include "data/constants.h"
 #include "data/iterator.h"
+#include <string.h>
 
 #define _CRT_SECURE_NO_WARNINGS
 uint32_t* check_constraints_create_relationship(
