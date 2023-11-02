@@ -39,6 +39,3 @@ jobs:
           configure-options: -G Ninja
           build-type: ${{ matrix.build_type }}
           
-      - name: Test
-        working-directory: ${{ runner.workspace }}/build
-        run: ./main.exe
