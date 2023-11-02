@@ -1,5 +1,5 @@
-#ifndef LAB_1_INCLUDE
-#define LAB_1_INCLUDE
+#ifndef LAB_1_INCLUDE_H
+#define LAB_1_INCLUDE_H
 
 #include "./data/type.h"
 #include "./data/specific.h"
@@ -8,5 +8,8 @@
 #include "./data/relationship.h"
 #include "./data/property.h"
 #include "./data/page.h"
+#include "./data/constants.h"
+#include "./data/iterator.h"
+#include "./data/comparator.h"
 
 #endif

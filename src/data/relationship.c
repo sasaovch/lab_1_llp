@@ -1,54 +1,42 @@
 #include "../../include/include.h"
-#include "data/data.h"
-#include <stdint.h>
-#include <string.h>
 
-void print_relationship2(Relationship2* relationship) {
+
+void print_relationship(Relationship* relationship) {
     println("Print relationship");
     println("Id - %llu", relationship->id);
-    println("Type - %llu", relationship->name_type);
     println("Parent - %llu", relationship->parent_id);
     println("Child - %llu", relationship->child_id);
+    println("Type - %s", relationship->type);
+    println("Parent Type - %s", relationship->parent_type);
+    println("Child Type - %s", relationship->child_type);
 }
 
-void write_relationship2_to_file(Cursor* cursor, void* rl) {
-    Relationship2* relationship = (Relationship2*) rl;
-
-    write_to_file(cursor->file, &(relationship->id), UINT32_T_SIZE);
-    write_to_file(cursor->file, &(relationship->parent_id), UINT32_T_SIZE);
-    write_to_file(cursor->file, &(relationship->child_id), UINT32_T_SIZE);
-}
-
-uint64_t get_size_of_relationship2(void* rl) {
+uint64_t get_size_of_relationship(void* rl) {
     (void) rl;
     return RELATIONSHIP_SIZE;
 }
 
-//FIXME: good
-//FIXME: указатель куда пистаь уже стоит на нужном месте!!!!
-void write_relationship2_to_file_big(Cursor* cursor, PageHeader* page_header, Entity* entity, void* rel, const uint64_t* pointer) {
+void write_relationship_to_file(Cursor* cursor, PageHeader* page_header, Entity* entity, void* rel) {
     (void) page_header;
-    (void) pointer;
-    Relationship2* relationship = (Relationship2*) rel;
+    (void) entity;
+    Relationship* relationship = (Relationship*) rel;
 
-    set_relation2_id(relationship, entity->next_id);
-    entity->next_id += 1;
-    write_relationship2_to_file(cursor, rel);
+    write_uint_32_to_file(cursor, relationship->id);
+    write_uint_32_to_file(cursor, relationship->parent_id);
+    write_uint_32_to_file(cursor, relationship->child_id);
+    write_string_to_file(cursor, relationship->type, NAME_TYPE_WITH_TERM_LENGTH);
+    write_string_to_file(cursor, relationship->parent_type, NAME_TYPE_WITH_TERM_LENGTH);
+    write_string_to_file(cursor, relationship->child_type, NAME_TYPE_WITH_TERM_LENGTH);
+    
     page_header->offset += RELATIONSHIP_SIZE;
-
-
-    // uint64_t header_offset = page_offset + ;
-    // set_pointer_offset_file(cursor->file, header_offset);
-    // write_to_file(cursor->file, &(page_header->offset), UINT32_T_SIZE);
 }
-//FIXME: good
-void* read_relationship2(Cursor* cursor, Entity* meta_page, PageHeader* page_header, void* element, const uint64_t* offset_, char* body, uint32_t* read_block) {
+
+void* read_relationship(Cursor* cursor, PageHeader* page_header, void* element, const uint64_t* offset_, char* body, uint32_t* read_block) {
         (void) cursor;
         (void) page_header;
         (void) read_block;
 
-        Relationship2* relationship = (Relationship2*) element;
-        strcpy(relationship->name_type, meta_page->name_type);
+        Relationship* relationship = (Relationship*) element;
 
         uint32_t id = 0;
         uint32_t parent_id = 0;
@@ -63,75 +51,60 @@ void* read_relationship2(Cursor* cursor, Entity* meta_page, PageHeader* page_hea
         memcpy(&(child_id), body + offset, UINT32_T_SIZE);
         offset += UINT32_T_SIZE;
         
+        memcpy(relationship->type, body + offset, NAME_TYPE_SIZE);
+        offset += NAME_TYPE_SIZE;
+        memcpy(relationship->parent_type, body + offset, NAME_TYPE_SIZE);
+        offset += NAME_TYPE_SIZE;
+        memcpy(relationship->child_type, body + offset, NAME_TYPE_SIZE);
+        offset += NAME_TYPE_SIZE;
+        
         relationship->id = id;
         relationship->parent_id = parent_id;
         relationship->child_id = child_id;
+
         return relationship;
 }
 
-bool compare_relationship2(void* rl_1, void* rl_2) {
-    Relationship2* relationship_1 = (Relationship2*) rl_1;
-    Relationship2* relationship_2 = (Relationship2*) rl_2;
+bool compare_relationship(void* rl_1, void* rl_2) {
+    Relationship* relationship_1 = (Relationship*) rl_1;
+    Relationship* relationship_2 = (Relationship*) rl_2;
     return relationship_1->parent_id == relationship_2->parent_id && 
-    relationship_1->id == relationship_2->id && relationship_1->child_id == relationship_2->id
-    && strcmp(relationship_1->name_type, relationship_2->name_type);
+        relationship_1->id == relationship_2->id && relationship_1->child_id == relationship_2->id
+        && strcmp(relationship_1->type, relationship_2->type) == 0;
 }
 
-bool compare_parent_relationship2(void* rl_1, void* rl_2) {
-    Relationship2* relationship_1 = (Relationship2*) rl_1;
-    Relationship2* relationship_2 = (Relationship2*) rl_2;
-    return relationship_1->parent_id == relationship_2->child_id;
+bool compare_parent_relationship(void* rl_1, void* rl_2) {
+    Relationship* relationship_1 = (Relationship*) rl_1;
+    Relationship* relationship_2 = (Relationship*) rl_2;
+    return relationship_1->parent_id == relationship_2->parent_id &&
+        strcmp(relationship_1->parent_type, relationship_2->parent_type) == 0;
 }
 
-bool compare_child_relationship2(void* rl_1, void* rl_2) {
-    Relationship2* relationship_1 = (Relationship2*) rl_1;
-    Relationship2* relationship_2 = (Relationship2*) rl_2;
-    return relationship_1->child_id == relationship_2->child_id;
+bool compare_relationship_by_node(void* rl_1, void* rl_2) {
+    Relationship* relationship_1 = (Relationship*) rl_1;
+    Relationship* relationship_2 = (Relationship*) rl_2;
+    return (strcmp(relationship_1->parent_type, relationship_2->parent_type) == 0 &&
+        relationship_1->parent_id == relationship_2->parent_id) ||
+        (strcmp(relationship_1->child_type, relationship_2->child_type) == 0 &&
+        relationship_1->child_id == relationship_2->child_id);
 }
 
-bool compare_id_relationship2(void* rl_1, void* rl_2) {
-    Relationship2* relationship_1 = (Relationship2*) rl_1;
-    Relationship2* relationship_2 = (Relationship2*) rl_2;
-    return relationship_1->id == relationship_2->id;
+bool compare_child_relationship(void* rl_1, void* rl_2) {
+    Relationship* relationship_1 = (Relationship*) rl_1;
+    Relationship* relationship_2 = (Relationship*) rl_2;
+    return relationship_1->child_id == relationship_2->child_id &&
+        strcmp(relationship_1->child_type, relationship_2->child_type) == 0;
 }
 
-// void* read_relationship(void* element, Entity* meta_page, char* body, uint64_t* offset) {
-//     Relationship* relationship = (Relationship*) element;
-//     strcpy(relationship->name_type, meta_page->name_type);
+bool compare_id_relationship(void* rl_1, void* rl_2) {
+    Relationship* relationship_1 = (Relationship*) rl_1;
+    Relationship* relationship_2 = (Relationship*) rl_2;
+    return relationship_1->id == relationship_2->id &&
+        strcmp(relationship_1->type, relationship_2->type) == 0;
+}
 
-//     uint32_t id = 0;
-//     uint32_t parent_length = 0;
-//     uint32_t child_length = 0;
-
-//     memcpy(&(id), body + *offset, UINT32_T_SIZE);
-//     *offset += UINT32_T_SIZE;
-
-//     memcpy(&(parent_length), body + *offset, UINT32_T_SIZE);
-//     *offset += UINT32_T_SIZE;
-
-//     char* parent = malloc(CHAR_SIZE * parent_length);
-//     memcpy(parent, body + *offset, CHAR_SIZE * parent_length);
-//     *offset += CHAR_SIZE * parent_length;
-    
-//     memcpy(&(child_length), body + *offset, UINT32_T_SIZE);
-//     *offset += UINT32_T_SIZE;
-
-//     char* child = malloc(CHAR_SIZE * child_length);
-//     memcpy(child, body + *offset, CHAR_SIZE * child_length);
-//     *offset += CHAR_SIZE * child_length;
-    
-//     relationship->id = id;
-//     relationship->parent_length = parent_length;
-//     relationship->parent = parent;
-//     relationship->child_length = child_length;
-//     relationship->child = child;
-
-//     return relationship;
-// }
-
-void memcpy_relationship2(void* element, Entity* meta_page, char* stack, uint64_t* offset) {
-    Relationship2* relationship = (Relationship2*) element;
-    (void) meta_page;
+void memcpy_relationship(void* element,char* stack, uint64_t* offset) {
+    Relationship* relationship = (Relationship*) element;
 
     memcpy(stack + *offset, &(relationship->id), UINT32_T_SIZE);
     *offset += UINT32_T_SIZE;
@@ -141,12 +114,19 @@ void memcpy_relationship2(void* element, Entity* meta_page, char* stack, uint64_
     
     memcpy(stack + *offset, &(relationship->child_id), UINT32_T_SIZE);
     *offset += UINT32_T_SIZE;
+    
+    memcpy(stack + *offset, relationship->type, NAME_TYPE_SIZE);
+    *offset += NAME_TYPE_SIZE;
+    
+    memcpy(stack + *offset, relationship->parent_type, NAME_TYPE_SIZE);
+    *offset += NAME_TYPE_SIZE;
+    
+    memcpy(stack + *offset, relationship->child_type, NAME_TYPE_SIZE);
+    *offset += NAME_TYPE_SIZE;
 }
 
-void* memget_relationship2(void* element, Entity* meta_page, char* stack, uint64_t* offset) {
-    Relationship2* relationship = (Relationship2*) element;
-    // strcpy(relationship->name_type, meta_page->name_type);
-    (void) meta_page;
+void* memget_relationship(void* element, char* stack, uint64_t* offset) {
+    Relationship* relationship = (Relationship*) element;
 
     uint32_t id = 0;
     uint32_t parent_id = 0;
@@ -161,6 +141,15 @@ void* memget_relationship2(void* element, Entity* meta_page, char* stack, uint64
     memcpy(&(child_id), stack + *offset, UINT32_T_SIZE);
     *offset += UINT32_T_SIZE;
 
+    memcpy(relationship->type, stack + *offset, NAME_TYPE_SIZE);
+    *offset += NAME_TYPE_SIZE;
+    
+    memcpy(relationship->parent_type, stack + *offset, NAME_TYPE_SIZE);
+    *offset += NAME_TYPE_SIZE;
+    
+    memcpy(relationship->child_type, stack + *offset, NAME_TYPE_SIZE);
+    *offset += NAME_TYPE_SIZE;
+
     relationship->id = id;
     relationship->parent_id = parent_id;
     relationship->child_id = child_id;
@@ -168,200 +157,11 @@ void* memget_relationship2(void* element, Entity* meta_page, char* stack, uint64
     return relationship;
 }
 
-void set_relation2_id(void* nd, uint32_t id) {
-    Relationship2* node = (Relationship2*) nd;
-    node->id = id;
+uint32_t relationship_work_with_id(void* rl, uint32_t id, bool is_setter) {
+    Relationship* relationship = (Relationship*) rl;
+    if (is_setter) {
+        relationship->id = id;
+        return id;
+    }
+    return relationship->id;
 }
-
-// void print_relationship(Relationship* relationship) {
-//     println("Print relationship");
-//     println("Id - %llu", relationship->id);
-//     println("Type - %s", relationship->name_type);
-//     println("Parent length - %i", relationship->parent_length);
-//     println("Parent - %s", relationship->parent);
-//     println("Child length - %i", relationship->child_length);
-//     println("Child - %s", relationship->child);
-// }
-
-// void write_relationship_to_file(Cursor* cursor, void* rl) {
-//     Relationship* relationship = (Relationship*) rl;
-
-//     write_to_file(cursor->file, &(relationship->id), UINT32_T_SIZE);
-//     write_to_file(cursor->file, &(relationship->parent_length), UINT32_T_SIZE);
-//     write_to_file(cursor->file, relationship->parent, CHAR_SIZE * relationship->parent_length);
-//     write_to_file(cursor->file, &(relationship->child_length), UINT32_T_SIZE);
-//     write_to_file(cursor->file, relationship->child, CHAR_SIZE * relationship->child_length);
-// }
-
-// uint64_t get_size_of_relationship(void* rl) {
-//     (void) rl;
-//     return RELATIONSHIP_SIZE - CHAR_SIZE * (NAME_TYPE_SIZE + 1);
-// }
-
-// void write_uint_32_to_file(Cursor* cursor, uint32_t number) {
-//     write_to_file(cursor->file, &(number), UINT32_T_SIZE);
-// }
-// //FIXME: good
-// void write_relationship_to_file_big(Cursor* cursor, PageHeader* page_header, Entity* entity, void* rel, const uint64_t* pointer) {
-//     Relationship2* relationship = (Relationship2*) rel;
-
-//     set_node_id(relationship, entity->next_id);
-//     entity->next_id += 1;
-//     page_header->offset += get_size_of_relationship(relationship);
-
-//     write_uint_32_to_file(cursor, relationship->id);
-//     write_uint_32_to_file(cursor, relationship->parent_id);
-//     write_uint_32_to_file(cursor, relationship->child_id);
-
-//     uint64_t header_offset = page_offset + UINT32_T_SIZE * 2;
-//     set_pointer_offset_file(cursor->file, header_offset);
-//     write_to_file(cursor->file, &(page_header->offset), UINT32_T_SIZE);
-// }
-// //FIXME: good
-// void* read_big_element(Cursor* cursor, Entity* meta_page, PageHeader* page_header, void* element, uint64_t* offset, char* body, uint32_t* read_block) {
-//         (void) cursor;
-//         (void) page_header;
-//         (void) read_block;
-
-//         Relationship2* relationship = (Relationship2*) element;
-//         strcpy(relationship->name_type, meta_page->name_type);
-
-//         uint32_t id = 0;
-//         uint32_t parent_id = 0;
-//         uint32_t child_id = 0;
-        
-//         memcpy(&(id), body + *offset, UINT32_T_SIZE);
-//         *offset += UINT32_T_SIZE;
-//         memcpy(&(parent_id), body + *offset, UINT32_T_SIZE);
-//         *offset += UINT32_T_SIZE;
-//         memcpy(&(child_id), body + *offset, UINT32_T_SIZE);
-//         *offset += UINT32_T_SIZE;
-        
-//         relationship->id = id;
-//         relationship->parent_id = parent_id;
-//         relationship->child_id = child_id;
-//         return relationship;
-// }
-
-// bool compare_relationship(void* rl_1, void* rl_2) {
-//     Relationship* relationship_1 = (Relationship*) rl_1;
-//     Relationship* relationship_2 = (Relationship*) rl_2;
-//     return (strcmp(relationship_1->parent, relationship_2->parent) == 0) && (
-//         relationship_1->name_type == relationship_2->name_type) == 0 && 
-//         (strcmp(relationship_1->child, relationship_2->child) == 0);
-// }
-
-// bool compare_parent_relationship(void* rl_1, void* rl_2) {
-//     Relationship* relationship_1 = (Relationship*) rl_1;
-//     Relationship* relationship_2 = (Relationship*) rl_2;
-//     return (strcmp(relationship_1->parent, relationship_2->parent) == 0);
-// }
-
-// bool compare_child_relationship(void* rl_1, void* rl_2) {
-//     Relationship* relationship_1 = (Relationship*) rl_1;
-//     Relationship* relationship_2 = (Relationship*) rl_2;
-//     return (strcmp(relationship_1->child, relationship_2->child) == 0);
-// }
-
-// bool compare_id_relationship(void* rl_1, void* rl_2) {
-//     Relationship* relationship_1 = (Relationship*) rl_1;
-//     Relationship* relationship_2 = (Relationship*) rl_2;
-//     return relationship_1->id == relationship_2->id;
-// }
-
-// void* read_relationship(void* element, Entity* meta_page, char* body, uint64_t* offset) {
-//     Relationship* relationship = (Relationship*) element;
-//     strcpy(relationship->name_type, meta_page->name_type);
-
-//     uint32_t id = 0;
-//     uint32_t parent_length = 0;
-//     uint32_t child_length = 0;
-
-//     memcpy(&(id), body + *offset, UINT32_T_SIZE);
-//     *offset += UINT32_T_SIZE;
-
-//     memcpy(&(parent_length), body + *offset, UINT32_T_SIZE);
-//     *offset += UINT32_T_SIZE;
-
-//     char* parent = malloc(CHAR_SIZE * parent_length);
-//     memcpy(parent, body + *offset, CHAR_SIZE * parent_length);
-//     *offset += CHAR_SIZE * parent_length;
-    
-//     memcpy(&(child_length), body + *offset, UINT32_T_SIZE);
-//     *offset += UINT32_T_SIZE;
-
-//     char* child = malloc(CHAR_SIZE * child_length);
-//     memcpy(child, body + *offset, CHAR_SIZE * child_length);
-//     *offset += CHAR_SIZE * child_length;
-    
-//     relationship->id = id;
-//     relationship->parent_length = parent_length;
-//     relationship->parent = parent;
-//     relationship->child_length = child_length;
-//     relationship->child = child;
-
-//     return relationship;
-// }
-
-// void memcpy_relationship(void* element, Entity* meta_page, char* stack, uint64_t* offset) {
-//     Relationship* relationship = (Relationship*) element;
-//     (void) meta_page;
-
-//     uint32_t parent_length = relationship->parent_length;
-//     uint32_t child_length = relationship->child_length;
-
-//     memcpy(stack + *offset, &(relationship->id), UINT32_T_SIZE);
-//     *offset += UINT32_T_SIZE;
-
-//     memcpy(stack + *offset, &(parent_length), UINT32_T_SIZE);
-//     *offset += UINT32_T_SIZE;
-
-//     memcpy(stack + *offset, relationship->parent, CHAR_SIZE * parent_length);
-//     *offset += CHAR_SIZE * parent_length;
-    
-//     memcpy(stack + *offset, &(child_length), UINT32_T_SIZE);
-//     *offset += UINT32_T_SIZE;
-
-//     memcpy(stack + *offset, relationship->child, CHAR_SIZE * child_length);
-//     *offset += CHAR_SIZE * child_length;
-// }
-
-// void* memget_relationship(void* element, Entity* meta_page, char* stack, uint64_t* offset) {
-//     Relationship* relationship = (Relationship*) element;
-//     strcpy(relationship->name_type, meta_page->name_type);
-
-//     uint32_t id = 0;
-//     uint32_t parent_length = 0;
-//     uint32_t child_length = 0;
-
-//     memcpy(&(id), stack + *offset, UINT32_T_SIZE);
-//     *offset += UINT32_T_SIZE;
-
-//     memcpy(&(parent_length), stack + *offset, UINT32_T_SIZE);
-//     *offset += UINT32_T_SIZE;
-
-//     char* parent = malloc(CHAR_SIZE * parent_length);
-//     memcpy(parent, stack + *offset, CHAR_SIZE * parent_length);
-//     *offset += CHAR_SIZE * parent_length;
-    
-//     memcpy(&(child_length), stack + *offset, UINT32_T_SIZE);
-//     *offset += UINT32_T_SIZE;
-
-//     char* child = malloc(CHAR_SIZE * child_length);
-//     memcpy(child, stack + *offset, CHAR_SIZE * child_length);
-//     *offset += CHAR_SIZE * child_length;
-    
-//     relationship->id = id;
-//     relationship->parent_length = parent_length;
-//     relationship->parent = parent;
-//     relationship->child_length = child_length;
-//     relationship->child = child;
-//     print_relationship(relationship);
-
-//     return relationship;
-// }
-
-// void set_relation_id(void* nd, uint32_t id) {
-//     Relationship* node = (Relationship*) nd;
-//     node->id = id;
-// }

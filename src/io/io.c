@@ -1,4 +1,5 @@
 #include "../../include/io/io.h"
+#include "../../include/data/constants.h"
 
 void println(const char *line, ...) {
     va_list args;
@@ -31,6 +32,16 @@ void debug(int num, const char *line, ...) {
 void read_from_file(File* file, void* read_buf, uint64_t size) {
     ssize_t bytes_read = read(file->file_descriptor, read_buf, size);
     error_exit(bytes_read, "Error reading from file %s", file->file_descriptor);
+}
+
+void fail_print(const char *line, ...) {
+    println("---------------------------");
+    va_list args;
+    va_start(args, line);
+    vprintf(line, args);
+    printf("\n");
+    va_end(args);
+    println("---------------------------");
 }
 
 uint32_t find_last_entity(uint64_t file_length, Page* page, File* file) {
@@ -119,7 +130,7 @@ void write_uint_32_to_file(Cursor* cursor, uint32_t number) {
     write_to_file(cursor->file, &(number), UINT32_T_SIZE);
 }
 void write_type_to_file(Cursor* cursor, char* type) {
-    write_to_file(cursor->file, type, NAME_TYPE_SIZE + 1);
+    write_to_file(cursor->file, type, NAME_TYPE_LENGTH + 1);
 }
 void write_string_to_file(Cursor* cursor, char* string, uint32_t length) {
     write_to_file(cursor->file, string, CHAR_SIZE * length);

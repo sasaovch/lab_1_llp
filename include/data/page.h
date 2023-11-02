@@ -1,5 +1,5 @@
-#ifndef LAB_1_PAGE
-#define LAB_1_PAGE
+#ifndef LAB_1_PAGE_H
+#define LAB_1_PAGE_H
 
 #include "../io/io.h"
 

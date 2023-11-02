@@ -1,85 +1,83 @@
-#ifndef LAB_1_CRUD
-#define LAB_1_CRUD
+#ifndef LAB_1_CRUD_H
+#define LAB_1_CRUD_H
 
 #include "common.h"
+#include "data/data.h"
 
 uint32_t* create_node(Cursor* cursor, Node* node);
 
-uint32_t* create_relationship(Cursor* cursor, Relationship2* relationship);
+uint32_t* create_relationship(Cursor* cursor, Relationship* relationship);
 
-uint32_t* create_property(Cursor* cursor, Property2* property);
+uint32_t* create_property(Cursor* cursor, Property* property);
 
-void delete_node(Cursor* cursor, Node* node);
+bool delete_all_nodes(Cursor* cursor, Node* node);
 
-void delete_node_by_id(Cursor* cursor, Node* node);
+bool delete_node_by_id(Cursor* cursor, Node* node);
 
-void delete_node_by_name(Cursor* cursor, Node* node);
+bool delete_node_by_name(Cursor* cursor, Node* node);
 
-void delete_relationship(Cursor* cursor, Relationship2* relationship);
+bool delete_nodes_greater_id(Cursor* cursor, Node* node);
 
-void delete_relationship_by_id(Cursor* cursor, Relationship2* relationship);
+bool delete_all_relationships(Cursor* cursor, Relationship* relationship);
 
-void delete_relationship_by_parent(Cursor* cursor, Relationship2* relationship);
+bool delete_relationship_by_id(Cursor* cursor, Relationship* relationship);
 
-void delete_relationship_by_child(Cursor* cursor, Relationship2* relationship);
+bool delete_relationship_by_parent(Cursor* cursor, Relationship* relationship);
 
-void delete_property(Cursor* cursor, Property2* property);
+bool delete_relationship_by_child(Cursor* cursor, Relationship* relationship);
 
-void delete_property_by_subject(Cursor* cursor, Property2* property);
+bool delete_all_properties(Cursor* cursor, Property* property);
 
-void delete_property_by_key(Cursor* cursor, Property2* property);
+bool delete_property_by_subject(Cursor* cursor, Property* property);
 
-void update_node(Cursor* cursor, Node* old_node, Node* new_node);
+bool delete_property_by_key(Cursor* cursor, Property* property);
 
-void update_node_by_id(Cursor* cursor, Node* old_node, Node* new_node);
+bool update_all_nodes(Cursor* cursor, Node* old_node, Node* new_node);
 
-void update_node_by_name(Cursor* cursor, Node* old_node, Node* new_node);
+bool update_node_by_id(Cursor* cursor, Node* old_node, Node* new_node);
 
-void update_relationship(Cursor* cursor, Relationship2* old_relationship, Relationship2* new_relationship);
+bool update_node_by_name(Cursor* cursor, Node* old_node, Node* new_node);
 
-void update_relationship_by_id(Cursor* cursor, Relationship2* old_relationship, Relationship2* new_relationship);
+bool update_all_relationships(Cursor* cursor, Relationship* old_relationship, Relationship* new_relationship);
 
-void update_relationship_by_child(Cursor* cursor, Relationship2* old_relationship, Relationship2* new_relationship);
+bool update_relationship_by_id(Cursor* cursor, Relationship* old_relationship, Relationship* new_relationship);
 
-void update_relationship_by_parent(Cursor* cursor, Relationship2* old_relationship, Relationship2* new_relationship);
+bool update_relationship_by_child(Cursor* cursor, Relationship* old_relationship, Relationship* new_relationship);
 
-void update_property(Cursor* cursor, Property2* old_property, Property2* new_property);
+bool update_relationship_by_parent(Cursor* cursor, Relationship* old_relationship, Relationship* new_relationship);
 
-void update_property_by_subject(Cursor* cursor, Property2* old_property, Property2* new_property);
+bool update_all_properties(Cursor* cursor, Property* old_property, Property* new_property);
 
-void update_property_by_key(Cursor* cursor, Property2* old_property, Property2* new_property);
+bool update_property_by_id(Cursor* cursor, Property* old_property, Property* new_property);
 
+bool update_property_by_subject(Cursor* cursor, Property* old_property, Property* new_property);
 
-void create_relationship2(Cursor* cursor, Relationship2* relationship);
+bool update_property_by_key(Cursor* cursor, Property* old_property, Property* new_property);
 
-void create_property2(Cursor* cursor, Property2* property);
+Iterator* select_all_nodes(Cursor* cursor, Node* node);
 
-void delete_relationship2(Cursor* cursor, Relationship2* relationship);
+Iterator* select_node_by_id(Cursor* cursor, Node* node);
 
-void delete_relationship2_by_id(Cursor* cursor, Relationship2* relationship);
+Iterator* select_node_by_name(Cursor* cursor, Node* node);
 
-void delete_relationship2_by_parent(Cursor* cursor, Relationship2* relationship);
+Iterator* select_all_relationships(Cursor* cursor, Relationship* relationship);
 
-void delete_relationship2_by_child(Cursor* cursor, Relationship2* relationship);
+Iterator* select_relationship_by_id(Cursor* cursor, Relationship* relationship);
 
-void delete_property2(Cursor* cursor, Property2* property);
+Iterator* select_relationship_by_parent(Cursor* cursor, Relationship* relationship);
 
-void delete_property2_by_subject(Cursor* cursor, Property2* property);
+Iterator* select_relationship_by_child(Cursor* cursor, Relationship* relationship);
 
-void delete_property2_by_key(Cursor* cursor, Property2* property);
+Iterator* select_all_properties(Cursor* cursor, Property* property);
 
-void update_relationship2(Cursor* cursor, Relationship2* old_relationship, Relationship2* new_relationship);
+Iterator* select_property_by_subject(Cursor* cursor, Property* property);
 
-void update_relationship2_by_id(Cursor* cursor, Relationship2* old_relationship, Relationship2* new_relationship);
+Iterator* select_property_by_key(Cursor* cursor, Property* property);
 
-void update_relationship2_by_child(Cursor* cursor, Relationship2* old_relationship, Relationship2* new_relationship);
+EntityIterator* select_properties_by_node(Cursor* cursor, Node* node);
 
-void update_relationship2_by_parent(Cursor* cursor, Relationship2* old_relationship, Relationship2* new_relationship);
+EntityIterator* select_relationships_by_node(Cursor* cursor, Node* node);
 
-void update_property2(Cursor* cursor, Property2* old_property, Property2* new_property);
-
-void update_property2_by_subject(Cursor* cursor, Property2* old_property, Property2* new_property);
-
-void update_property2_by_key(Cursor* cursor, Property2* old_property, Property2* new_property);
+EntityIterator* get_entity_iter_by_node(Cursor* cursor, Node* node, TypeOfElement element_type);
 
 #endif

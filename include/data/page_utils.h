@@ -1,5 +1,5 @@
-#ifndef LAB1_UTILS_H
-#define LAB1_UTILS_H
+#ifndef LAB_1_UTILS_H
+#define LAB_1_UTILS_H
 
 #include "../io/io.h"
 

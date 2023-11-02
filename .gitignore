@@ -1,1 +1,10 @@
 tutorial
+.cache
+.vscode
+build
+CMakeFiles
+cmake_install.cmake
+CMakeCache.txt
+data
+libllp_lib.a
+llp

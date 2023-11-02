@@ -1,21 +1,22 @@
-#ifndef LAB_1_SPEC
-#define LAB_1_SPEC
+#ifndef LAB_1_SPEC_H
+#define LAB_1_SPEC_H
 
 #include "common.h"
 
-void print_property_by_node(Cursor* cursor, Node* node);
+uint32_t* check_constraints_create_relationship(
+    Cursor* cursor, Relationship* relationship,
+    FunctionHelper* function_helper
+);
 
-void print_relationship_by_node(Cursor* cursor, Node* node);
+uint32_t* check_constraints_create_property(
+    Cursor* cursor, Property* property,
+    FunctionHelper* function_helper
+);
 
-// void read_all_elements_by_type(Cursor* cursor, TypeOfElement type);
-
-void print_property2_by_node(Cursor* cursor, Node* node);
-
-void print_relationship2_by_node(Cursor* cursor, Node* node);
-
-void read_all_elements_by_type(Cursor* cursor, TypeOfElement type);
+bool delete_node_with_others(Cursor* cursor, Node* node) ;
 
 void write_big_string_to_file(Cursor* cursor, PageHeader* page_header, Entity* entity, uint32_t length, char* string);
+
 void read_big_string_from_file(Cursor* cursor, PageHeader* page_header, char* body, char* string, uint32_t length, uint64_t* offset, uint32_t* read_block) ;
 
 #endif

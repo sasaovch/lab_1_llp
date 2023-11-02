@@ -1,179 +1,185 @@
 #include "../../include/include.h"
-#include "data/data.h"
-#include "data/specific.h"
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
+#include "data/iterator.h"
 
-// void print_property_by_node(Cursor* cursor, Node* node) {
-//     // uint64_t pointer = 0;
-//     uint64_t table_offset = 0;
 
-//     Entity* table = (Entity*) malloc(ENTITY_SIZE);
-//     table = get_entity(cursor, PROPERTY, "proper", &(table_offset), table);
-//     if (table == NULL) {
-//         println("Error to find Node with name %s", node->name_type);
-//         return;
-//     }
-
-//     void* stack = get_elements_by_condition(
-//                         cursor, table, PROPERTY_SIZE, node, 
-//                         read_property2, is_property_for_node, get_size_of_property, memcpy_property);
-//     uint32_t number = 0;
-//     memcpy(&(number), stack, UINT32_T_SIZE);
-//     Property* no = (Property*) malloc(PROPERTY_SIZE);
-//     uint64_t offset = UINT32_T_SIZE;
-//     strcpy(table->name_type, "proper");
-//     for (uint32_t i = 0; i < number; i++) {
-//         no = memget_property(no, table, stack, &(offset));
-//         print_property(no);
-//     }
-// }
-
-// void print_relationship_by_node(Cursor* cursor, Node* node) {
-//     PageHeader* page_header = (PageHeader*) malloc(PAGE_HEADER_SIZE);
-//     Entity* table = (Entity*) malloc(ENTITY_SIZE);
-//     Entity* entity = (Entity*) malloc(ENTITY_SIZE);
+uint32_t* check_constraints_create_relationship(
+    Cursor* cursor, Relationship* relationship,
+    FunctionHelper* function_helper
+) {
+    Node* nd = (Node*) malloc(NODE_SIZE);
+    nd->id = relationship->parent_id;
+    strcpy(nd->type, relationship->parent_type);
     
-//     char* page_body = (char*) malloc(PAGE_BODY_SIZE);
-//     int page_num = 0;
-//     // uint64_t init_size = NAME_TYPE_SIZE * 100;
-//     // void* table_stack = malloc(init_size);
-//     // uint64_t offset = 0;
+    Iterator* iter = select_node_by_id(cursor, nd);
+    if (!has_next(iter)) {
+        return NULL;
+    }
 
-//     off_t file_length = lseek(cursor->file->file_descriptor, 0, SEEK_END); // find end of file
-//     error_exit(file_length, "Failed to find end of file");
-//     do {
-//         set_pointer_offset_file(cursor->file, page_num * PAGE_SIZE);
+    nd->id = relationship->child_id;
+    strcpy(nd->type, relationship->child_type);
 
-//         read_from_file(cursor->file, page_header, PAGE_HEADER_SIZE);        
-//         read_from_file(cursor->file, page_body, PAGE_BODY_SIZE);
+    iter = select_node_by_id(cursor, nd);
+    if (!has_next(iter)) {
+        return NULL;
+    }
 
-        
-//         for (uint64_t i = 0; i < (page_header->offset / ENTITY_SIZE); i++) {
-//             memcpy(table, page_body + i * ENTITY_SIZE, ENTITY_SIZE);
-//             if (RELATIONSHIP == table->type) {
-//                 uint64_t table_offset = 0;
-//                 entity = get_entity(cursor, RELATIONSHIP, table->name_type, &(table_offset), entity);
-//                 if (entity == NULL) {
-//                     println("Error to find Entity with name %s", table->name_type);
-//                 }
+    free(iter);
+    free(nd);
 
-//                 void* stack = get_elements_by_condition(
-//                                     cursor, entity, RELATIONSHIP_SIZE, node, 
-//                                     read_relationship, is_relationship_for_node, get_size_of_relationship, memcpy_relationship);
-//                 uint32_t number = 0;
-//                 memcpy(&(number), stack, UINT32_T_SIZE);
-//                 Relationship* no = (Relationship*) malloc(RELATIONSHIP_SIZE);
-//                 uint64_t offset_ = UINT32_T_SIZE;
-//                 strcpy(no->name_type, entity->name_type);
-//                 for (uint32_t i = 0; i < number; i++) {
-//                     no = memget_relationship(no, table, stack, &(offset_));
-//                     print_relationship(no);
-//                 }
-//             }
-//         }
-//         page_num = page_header->next_block;
-//     } while (page_num != 0);
+    return create_element(cursor, relationship, RELATIONSHIP, relationship->type, function_helper, NULL);
+}
+
+uint32_t* check_constraints_create_property(
+    Cursor* cursor, Property* property,
+    FunctionHelper* function_helper
+) {
+    Node* nd = (Node*) malloc(NODE_SIZE);
+    nd->id = property->subject_id;
+    strcpy(nd->type, property->subject_type);
     
-//     free(page_header);
-//     free(page_body);
-//     // uint64_t pointer = 0;
+    Iterator* iter = select_node_by_id(cursor, nd);
+    if (!has_next(iter)) {
+        return NULL;
+    }
 
+    iter = select_property_by_subject(cursor, property);
+    if (has_next(iter)) {
+        return NULL;
+    }
 
-//     // table = get_entity(cursor, RELATIONSHIP, "proper", &(table_offset), table);
-//     // if (table == NULL) {
-//     //     println("Error to find Node with name %s", node->name_type);
-//     //     return;
-//     // }
-
-//     // void* stack = get_elements_by_condition(
-//     //                     cursor, table, PROPERTY_SIZE, node, 
-//     //                     read_property, is_property_for_node, get_size_of_property, memcpy_property);
-//     // uint32_t number = 0;
-//     // memcpy(&(number), stack, UINT32_T_SIZE);
-//     // Property* no = (Property*) malloc(PROPERTY_SIZE);
-//     // uint64_t offset = UINT32_T_SIZE;
-//     // strcpy(table->name_type, "proper");
-//     // for (uint32_t i = 0; i < number; i++) {
-//     //     no = memget_property(no, table, stack, &(offset));
-//     //     print_property(no);
-//     // }
-// }
-
-void read_all_elements_by_type(Cursor* cursor, TypeOfElement type) {
     Entity* entity = (Entity*) malloc(ENTITY_SIZE);
     PageHeader* page_header = (PageHeader*) malloc(PAGE_HEADER_SIZE);
+    uint64_t pointer = 0;
     
-    char* page_body = malloc(PAGE_BODY_SIZE);
-    set_pointer_offset_file(cursor->file, 0);
-    read_from_file(cursor->file, page_header, PAGE_HEADER_SIZE);
-    uint32_t page_num = find_block_before(cursor, page_header, entity);
+    entity = get_entity(cursor, PROPERTY, property->type, &(pointer), entity);
+    if (entity == NULL) {
+        free(entity);
+        free(page_header);
+        println("Error to find Entity with name %s", property->type);
+        return NULL;
+    }
+    if (entity->value_type != property->value_type) {
+        return NULL;
+    }
+    free(page_header);
+    free(entity);
+    free(iter);
+    free(nd);
 
-    off_t file_length = lseek(cursor->file->file_descriptor, 0, SEEK_END);
-    error_exit(file_length, "Failed to find end of file");
+    return create_element(cursor, property, PROPERTY, property->type, function_helper, NULL);
+}
+
+void delete_relationship_iter(EntityIterator* entity_iterator) {
+    Iterator* iterator = entity_iterator->iterator;
+    uint64_t offset = *(iterator->offset_) - RELATIONSHIP_SIZE;
+    uint32_t read_block = *(iterator->read_block_);
     
-    do {
-        set_pointer_offset_file(cursor->file, page_num * PAGE_SIZE);
+    Cursor* cursor = iterator->cursor;
+    PageHeader* page_header = iterator->page_header;
+    Entity* entity = iterator->entity;
+    
+    char* body = iterator->body;
+    uint64_t page_offset = read_block * PAGE_SIZE;
 
-        read_from_file(cursor->file, page_header, PAGE_HEADER_SIZE);        
-        read_from_file(cursor->file, page_body, PAGE_BODY_SIZE);
+    char* new_body = malloc(PAGE_BODY_SIZE);
+    
+    set_pointer_offset_file(cursor->file, page_offset);
+    read_from_file(cursor->file, page_header, PAGE_HEADER_SIZE);  
+    read_from_file(cursor->file, body, PAGE_BODY_SIZE);
 
+    memcpy(new_body, body, offset);
+    memcpy(new_body + offset, body + offset + RELATIONSHIP_SIZE, PAGE_BODY_SIZE - offset - RELATIONSHIP_SIZE);
 
-        for (uint32_t i = 0; i < (page_header->offset / ENTITY_SIZE); i++) {
-            memcpy(entity, page_body + i * ENTITY_SIZE, ENTITY_SIZE);
-            // uint32_t block_before = find_block_before(cursor, pageHeader, metaPage);
-            if (type == META) print_type(entity);
-            if (entity->type != type) continue;
-            switch (type) {
-                case NODE: {
-                    void* stack = get_elements_by_condition(
-                        cursor, entity, NODE_SIZE, NULL, 
-                        read_node, return_true, get_size_of_node, memcpy_node);
-                    uint32_t number = 0;
-                    memcpy(&(number), stack, UINT32_T_SIZE);
-                    Node* no = (Node*) malloc(NODE_SIZE);
-                    uint64_t offset = UINT32_T_SIZE;
-                    for (uint32_t j = 0; j < number; j++) {
-                        no = memget_node(no, entity, stack, &(offset));
-                        print_node(no);
-                    }
-                    break;
-                }
-                case RELATIONSHIP: {
-                    void* stack = get_elements_by_condition(
-                        cursor, entity, RELATIONSHIP_SIZE, NULL, 
-                        read_relationship2, return_true, get_size_of_relationship2, memcpy_relationship2);
-                    uint32_t number = 0;
-                    memcpy(&(number), stack, UINT32_T_SIZE);
-                    Relationship2* no = (Relationship2*) malloc(RELATIONSHIP_SIZE);
-                    uint64_t offset = UINT32_T_SIZE;
-                    for (uint32_t j = 0; j < number; j++) {
-                        no = memget_relationship2(no, entity, stack, &(offset));
-                        print_relationship2(no);
-                    }
-                    break;
-                }
-                case PROPERTY: {
-                    void* stack = get_elements_by_condition(
-                        cursor, entity, PROPERTY_SIZE, NULL, 
-                        read_property2, return_true, get_size_of_property2, memcpy_property2);
-                    uint32_t number = 0;
-                    memcpy(&(number), stack, UINT32_T_SIZE);
-                    Property2* no = (Property2*) malloc(PROPERTY_SIZE);
-                    uint64_t offset = UINT32_T_SIZE;
-                    for (uint32_t j = 0; j < number; j++) {
-                        no = memget_property2(no, entity, stack, &(offset));
-                        print_property2(no);
-                    }
-                    break;
-                }
-                case META:
-                    print_type(entity);
-                }
-            }
-        page_num = page_header->next_block;
-    } while (page_num != 0);
+    uint64_t new_offset = page_header->offset - RELATIONSHIP_SIZE;
+        
+    set_pointer_offset_file(cursor->file, page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
+    write_to_file(cursor->file, &(new_offset), UINT32_T_SIZE);
+    write_to_file(cursor->file, new_body, PAGE_BODY_SIZE);
+        
+    uint32_t new_block_number = page_header->block_number;
+    if (new_offset == 0) {
+        uint64_t pointer = *(entity_iterator->offset_) - ENTITY_SIZE + PAGE_HEADER_SIZE + *(entity_iterator->read_block_) * PAGE_SIZE;
+        cut_blocks(cursor, page_header, &(pointer), entity);
+        new_block_number = find_block_before(cursor, page_header, entity);
+    }
+    *(entity_iterator->iterator->offset_) = new_offset;
+    *(entity_iterator->iterator->read_block_) = new_block_number;
+
+    free(new_body);
+}
+
+void delete_property_iter(EntityIterator* entity_iterator) {
+    Property* delete_prop = entity_iterator->iterator->next_element;
+    Iterator* iterator = entity_iterator->iterator;
+    
+    Cursor* cursor = iterator->cursor;
+    PageHeader* page_header = iterator->page_header;
+    Entity* entity = iterator->entity;
+
+    uint64_t size_of_element = iterator->function_helper->get_size_of_element(delete_prop);
+    uint64_t offset = *(iterator->offset_) - size_of_element;
+    
+    uint32_t read_block = *(iterator->read_block_);
+    uint64_t page_offset = read_block * PAGE_SIZE;
+    
+    char* body = iterator->body;
+    char* new_body = malloc(PAGE_BODY_SIZE);
+
+    set_pointer_offset_file(cursor->file, page_offset);
+    read_from_file(cursor->file, page_header, PAGE_HEADER_SIZE);  
+    read_from_file(cursor->file, body, PAGE_BODY_SIZE);
+        
+    if (size_of_element <= PAGE_BODY_SIZE) {
+        memcpy(new_body, body, offset);
+        memcpy(new_body + offset, body + offset + size_of_element, PAGE_BODY_SIZE - offset - size_of_element);
+
+        uint64_t new_offset = page_header->offset - size_of_element;
+            
+        set_pointer_offset_file(cursor->file, page_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
+        write_to_file(cursor->file, &(new_offset), UINT32_T_SIZE);
+        write_to_file(cursor->file, new_body, PAGE_BODY_SIZE);
+            
+        uint32_t new_block_number = page_header->block_number;
+        if (new_offset == 0) {
+            uint64_t pointer = *(entity_iterator->offset_) - ENTITY_SIZE + PAGE_HEADER_SIZE + *(entity_iterator->read_block_) * PAGE_SIZE;
+            cut_blocks(cursor, page_header, &(pointer), entity);
+            new_block_number = find_block_before(cursor, page_header, entity);
+        }
+        *(entity_iterator->iterator->offset_) = new_offset;
+        *(entity_iterator->iterator->read_block_) = new_block_number;
+    } else {
+        uint64_t pointer = *(entity_iterator->offset_) - ENTITY_SIZE + PAGE_HEADER_SIZE + *(entity_iterator->read_block_) * PAGE_SIZE;
+        remove_bid_element(cursor, page_header, &(pointer), iterator->function_helper->get_size_of_element, delete_prop);
+    }
+
+    free(new_body);
+}
+
+bool delete_node_with_others(
+        Cursor* cursor, Node* node
+    ) {
+
+    EntityIterator* entity_iterator_rel = select_relationships_by_node(cursor, node);
+    while (entity_iterator_rel != NULL && entity_has_next(entity_iterator_rel)) {
+        delete_relationship_iter(entity_iterator_rel);
+    }
+
+    EntityIterator* entity_iterator_prop = select_properties_by_node(cursor, node);
+    while (entity_iterator_prop != NULL && entity_has_next(entity_iterator_prop)) {
+        delete_property_iter(entity_iterator_prop);
+    }
+    free_entity_iter(entity_iterator_rel);
+    free_entity_iter(entity_iterator_prop);
+    
+    FunctionHelper* function_helper = (FunctionHelper*) malloc(sizeof(FunctionHelper));
+    function_helper->condition = compare_id_node;
+    function_helper->get_size_of_element = get_size_of_node;
+    function_helper->write_element_to_file = write_node_to_file;
+    function_helper->read_big_element = read_node;
+    
+    bool result = delete_element(cursor, node, NODE_SIZE, node->type, NODE, function_helper);
+    free(function_helper);
+    return result;
 }
 
 void write_big_string_to_file(Cursor* cursor, PageHeader* page_header, Entity* entity, uint32_t length, char* string) {
@@ -181,7 +187,7 @@ void write_big_string_to_file(Cursor* cursor, PageHeader* page_header, Entity* e
     uint32_t string_offset = 0;
     char* string_to_write = (char*) calloc(1, PAGE_BODY_SIZE);
     uint32_t page_offset = page_header->block_number * PAGE_SIZE;
-    
+
     while (length != 0) {
         uint32_t write_length = 0;
         if (length <= PAGE_BODY_SIZE - page_header->offset) {
@@ -219,16 +225,19 @@ void write_big_string_to_file(Cursor* cursor, PageHeader* page_header, Entity* e
 
 void read_big_string_from_file(Cursor* cursor, PageHeader* page_header, char* body, char* string, uint32_t length, uint64_t* offset, uint32_t* read_block) {
     uint32_t to_read_length = 0;
+    uint32_t string_offset = 0;
     
     while (length != 0) {
+
         if (length <= PAGE_BODY_SIZE - *offset) {
             to_read_length = length;
         } else {
             to_read_length = PAGE_BODY_SIZE - *offset;
         }
     
-        memcpy(string, body + *offset, to_read_length);
+        memcpy(string + string_offset, body + *offset, to_read_length);
         *offset += to_read_length;
+        string_offset += to_read_length;
         length -= to_read_length;
 
         if (*offset == PAGE_BODY_SIZE) {

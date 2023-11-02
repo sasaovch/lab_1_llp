@@ -90,7 +90,6 @@ all: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/sasaovch/Development/ITMO/lab_1_llp/CMakeFiles /Users/sasaovch/Development/ITMO/lab_1_llp//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/sasaovch/Development/ITMO/lab_1_llp/CMakeFiles 0
-	# rm -f data
 .PHONY : all
 
 # The main clean target
@@ -170,6 +169,60 @@ src/data/common.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp_lib.dir/build.make CMakeFiles/llp_lib.dir/src/data/common.c.s
 .PHONY : src/data/common.c.s
 
+src/data/comparator.o: src/data/comparator.c.o
+.PHONY : src/data/comparator.o
+
+# target to build an object file
+src/data/comparator.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp.dir/build.make CMakeFiles/llp.dir/src/data/comparator.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp_lib.dir/build.make CMakeFiles/llp_lib.dir/src/data/comparator.c.o
+.PHONY : src/data/comparator.c.o
+
+src/data/comparator.i: src/data/comparator.c.i
+.PHONY : src/data/comparator.i
+
+# target to preprocess a source file
+src/data/comparator.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp.dir/build.make CMakeFiles/llp.dir/src/data/comparator.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp_lib.dir/build.make CMakeFiles/llp_lib.dir/src/data/comparator.c.i
+.PHONY : src/data/comparator.c.i
+
+src/data/comparator.s: src/data/comparator.c.s
+.PHONY : src/data/comparator.s
+
+# target to generate assembly for a file
+src/data/comparator.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp.dir/build.make CMakeFiles/llp.dir/src/data/comparator.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp_lib.dir/build.make CMakeFiles/llp_lib.dir/src/data/comparator.c.s
+.PHONY : src/data/comparator.c.s
+
+src/data/constants.o: src/data/constants.c.o
+.PHONY : src/data/constants.o
+
+# target to build an object file
+src/data/constants.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp.dir/build.make CMakeFiles/llp.dir/src/data/constants.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp_lib.dir/build.make CMakeFiles/llp_lib.dir/src/data/constants.c.o
+.PHONY : src/data/constants.c.o
+
+src/data/constants.i: src/data/constants.c.i
+.PHONY : src/data/constants.i
+
+# target to preprocess a source file
+src/data/constants.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp.dir/build.make CMakeFiles/llp.dir/src/data/constants.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp_lib.dir/build.make CMakeFiles/llp_lib.dir/src/data/constants.c.i
+.PHONY : src/data/constants.c.i
+
+src/data/constants.s: src/data/constants.c.s
+.PHONY : src/data/constants.s
+
+# target to generate assembly for a file
+src/data/constants.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp.dir/build.make CMakeFiles/llp.dir/src/data/constants.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp_lib.dir/build.make CMakeFiles/llp_lib.dir/src/data/constants.c.s
+.PHONY : src/data/constants.c.s
+
 src/data/crud_methods.o: src/data/crud_methods.c.o
 .PHONY : src/data/crud_methods.o
 
@@ -196,6 +249,33 @@ src/data/crud_methods.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp.dir/build.make CMakeFiles/llp.dir/src/data/crud_methods.c.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp_lib.dir/build.make CMakeFiles/llp_lib.dir/src/data/crud_methods.c.s
 .PHONY : src/data/crud_methods.c.s
+
+src/data/iterator.o: src/data/iterator.c.o
+.PHONY : src/data/iterator.o
+
+# target to build an object file
+src/data/iterator.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp.dir/build.make CMakeFiles/llp.dir/src/data/iterator.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp_lib.dir/build.make CMakeFiles/llp_lib.dir/src/data/iterator.c.o
+.PHONY : src/data/iterator.c.o
+
+src/data/iterator.i: src/data/iterator.c.i
+.PHONY : src/data/iterator.i
+
+# target to preprocess a source file
+src/data/iterator.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp.dir/build.make CMakeFiles/llp.dir/src/data/iterator.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp_lib.dir/build.make CMakeFiles/llp_lib.dir/src/data/iterator.c.i
+.PHONY : src/data/iterator.c.i
+
+src/data/iterator.s: src/data/iterator.c.s
+.PHONY : src/data/iterator.s
+
+# target to generate assembly for a file
+src/data/iterator.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp.dir/build.make CMakeFiles/llp.dir/src/data/iterator.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/llp_lib.dir/build.make CMakeFiles/llp_lib.dir/src/data/iterator.c.s
+.PHONY : src/data/iterator.c.s
 
 src/data/node.o: src/data/node.c.o
 .PHONY : src/data/node.o
@@ -480,9 +560,18 @@ help:
 	@echo "... src/data/common.o"
 	@echo "... src/data/common.i"
 	@echo "... src/data/common.s"
+	@echo "... src/data/comparator.o"
+	@echo "... src/data/comparator.i"
+	@echo "... src/data/comparator.s"
+	@echo "... src/data/constants.o"
+	@echo "... src/data/constants.i"
+	@echo "... src/data/constants.s"
 	@echo "... src/data/crud_methods.o"
 	@echo "... src/data/crud_methods.i"
 	@echo "... src/data/crud_methods.s"
+	@echo "... src/data/iterator.o"
+	@echo "... src/data/iterator.i"
+	@echo "... src/data/iterator.s"
 	@echo "... src/data/node.o"
 	@echo "... src/data/node.i"
 	@echo "... src/data/node.s"
