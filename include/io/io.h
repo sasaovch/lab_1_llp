@@ -41,4 +41,5 @@ void write_string_to_file(Cursor* cursor, char* string, uint32_t length);
 
 void fail_print(const char *line, ...);
 
+
 #endif
