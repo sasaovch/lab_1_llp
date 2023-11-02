@@ -1,6 +1,5 @@
 #ifndef LAB_1_IO
 #define LAB_1_IO
-#define _CRT_SECURE_NO_WARNINGS
 
 // #include <stdio.h>
 #include <stdarg.h>

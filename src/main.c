@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "../include/test_data.h"
 #include "data/constants.h"
 
