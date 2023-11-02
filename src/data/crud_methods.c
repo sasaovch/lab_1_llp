@@ -337,7 +337,7 @@ EntityIterator* select_properties_by_node(Cursor* cursor, Node* node) {
     Node* nd = (Node*) entity_iterator->iterator->element;
     Property* property = (Property*) malloc(PROPERTY_SIZE);
     property->subject_id = nd->id;
-    strlcpy(property->subject_type, nd->type, (size_t)NAME_TYPE_WITH_TERM_LENGTH);
+    strcpy(property->subject_type, nd->type);
     entity_iterator->iterator->helper = property;
 
     return entity_iterator;
@@ -361,7 +361,7 @@ EntityIterator* select_relationships_by_node(Cursor* cursor, Node* node) {
     Relationship* relationship = (Relationship*) malloc(RELATIONSHIP_SIZE);
     relationship->parent_id = nd->id;
     relationship->child_id = nd->id;
-    strlcpy(relationship->parent_type, nd->type, (size_t)NAME_TYPE_WITH_TERM_LENGTH);
+    strcpy(relationship->parent_type, nd->type);
     entity_iterator->iterator->helper = relationship;
 
     return entity_iterator;

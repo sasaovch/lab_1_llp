@@ -351,7 +351,7 @@ void select_node(Cursor* cursor) {
     };
     Node node = {0, 2, "l", "person"};
     for (int i = 0; i < 4; i++) {
-        strlcpy(node.type, data[i].type, NAME_TYPE_WITH_TERM_LENGTH);
+        strcpy(node.type, data[i].type);
         Iterator* iterator = select_all_nodes(cursor, &(node));
         while (has_next(iterator)) {
             print_node(next(iterator));
@@ -382,7 +382,7 @@ void select_property(Cursor* cursor) {
     };
     Property pr = {0, 2, INT, "", "", ""};
     for (int i = 0; i < 2; i++) {
-        strlcpy(pr.type, data[i].type, NAME_TYPE_WITH_TERM_LENGTH);
+        strcpy(pr.type, data[i].type);
         Iterator* iterator = select_all_properties(cursor, &(pr));
         while (has_next(iterator)) {
             print_property(next(iterator));
@@ -505,8 +505,8 @@ void create_node_smoke(Cursor* cursor, int num) {
     for (int j = 0; j < 500 * num; j++) {
         int r = rand() % 15;
 
-        strlcpy(name, "sasaovchsa", 10);
-        strlcpy(node->type, types[r], NAME_TYPE_WITH_TERM_LENGTH);
+        strcpy(name, "sasaovchsa");
+        strcpy(node->type, types[r]);
 
         node->id = 0;
         node->name_length = 11;
@@ -562,8 +562,8 @@ void delete_smoke_test(Cursor* cursor) {
         for (int j = 0; j < 1 * i; j++) {
             int r = rand() % 15;
 
-            strlcpy(name, "sasaovchsa", 10);
-            strlcpy(node->type, types[r], NAME_TYPE_WITH_TERM_LENGTH);
+            strcpy(name, "sasaovchsa");
+            strcpy(node->type, types[r]);
 
             node->id = 0;
             node->name_length = 11;
@@ -614,8 +614,8 @@ void update_smoke_test(Cursor* cursor) {
         for (int j = 0; j < 100; j++) {
             int r = rand() % 15;
 
-            strlcpy(name, "sasaovchsa", 10);
-            strlcpy(node->type, types[r], NAME_TYPE_WITH_TERM_LENGTH);
+            strcpy(name, "sasaovchsa");
+            strcpy(node->type, types[r]);
 
             node->id = 0;
             node->name_length = 11;
@@ -643,8 +643,8 @@ void select_delete_smoke_test(Cursor* cursor) {
     Node *node = (Node*) malloc(NODE_SIZE);
     char* name = malloc(11 * CHAR_SIZE);
 
-    strlcpy(name, "sasaovch", NAME_TYPE_WITH_TERM_LENGTH);
-    strlcpy(node->type, "person", NAME_TYPE_WITH_TERM_LENGTH);
+    strcpy(name, "sasaovch");
+    strcpy(node->type, "person");
 
     node->id = 0;
     node->name_length = 11;
@@ -688,8 +688,8 @@ void create_n_nodes_(Cursor* cursor, int n) {
     Node *node = (Node*) malloc(NODE_SIZE);
     char* name = malloc(11 * CHAR_SIZE);
 
-    strlcpy(name, "sasaovch", NAME_TYPE_WITH_TERM_LENGTH);
-    strlcpy(node->type, "person", NAME_TYPE_WITH_TERM_LENGTH);
+    strcpy(name, "sasaovch");
+    strcpy(node->type, "person");
 
     node->id = 0;
     node->name_length = 11;
