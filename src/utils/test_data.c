@@ -357,7 +357,7 @@ void select_node(Cursor* cursor) {
     };
     Node node = {0, 2, "l", "person"};
     for (int i = 0; i < 4; i++) {
-        strcpy(node.type, data[i].type);
+        strcpy_s(node.type, data[i].type);
         Iterator* iterator = select_all_nodes(cursor, &(node));
         while (has_next(iterator)) {
             print_node(next(iterator));
@@ -374,7 +374,7 @@ void select_relationship(Cursor* cursor) {
     };
     Relationship rel = {0, 2, 0, "", "", ""};
     for (int i = 0; i < 4; i++) {
-        strcpy(rel.type, data[i].type);
+        strcpy_s(rel.type, data[i].type);
         fail_print("Find %s", rel.child_type);
         Iterator* iterator = select_all_relationships(cursor, &(rel));
         while (has_next(iterator)) {
@@ -390,7 +390,7 @@ void select_property(Cursor* cursor) {
     };
     Property pr = {0, 2, INT, "", "", ""};
     for (int i = 0; i < 2; i++) {
-        strcpy(pr.type, data[i].type);
+        strcpy_s(pr.type, data[i].type);
         Iterator* iterator = select_all_properties(cursor, &(pr));
         while (has_next(iterator)) {
             print_property(next(iterator));
@@ -513,8 +513,8 @@ void create_node_smoke(Cursor* cursor, int num) {
     for (int j = 0; j < 500 * num; j++) {
         int r = rand() % 15;
 
-        strcpy(name, "sasaovchsa");
-        strcpy(node->type, types[r]);
+        strcpy_s(name, "sasaovchsa");
+        strcpy_s(node->type, types[r]);
 
         node->id = 0;
         node->name_length = 11;
@@ -570,8 +570,8 @@ void delete_smoke_test(Cursor* cursor) {
         for (int j = 0; j < 1 * i; j++) {
             int r = rand() % 15;
 
-            strcpy(name, "sasaovchsa");
-            strcpy(node->type, types[r]);
+            strcpy_s(name, "sasaovchsa");
+            strcpy_s(node->type, types[r]);
 
             node->id = 0;
             node->name_length = 11;
@@ -622,8 +622,8 @@ void update_smoke_test(Cursor* cursor) {
         for (int j = 0; j < 100; j++) {
             int r = rand() % 15;
 
-            strcpy(name, "sasaovchsa");
-            strcpy(node->type, types[r]);
+            strcpy_s(name, "sasaovchsa");
+            strcpy_s(node->type, types[r]);
 
             node->id = 0;
             node->name_length = 11;
@@ -651,8 +651,8 @@ void select_delete_smoke_test(Cursor* cursor) {
     Node *node = (Node*) malloc(NODE_SIZE);
     char* name = malloc(11 * CHAR_SIZE);
 
-    strcpy(name, "sasaovch");
-    strcpy(node->type, "person");
+    strcpy_s(name, "sasaovch");
+    strcpy_s(node->type, "person");
 
     node->id = 0;
     node->name_length = 11;
@@ -696,8 +696,8 @@ void create_n_nodes_(Cursor* cursor, int n) {
     Node *node = (Node*) malloc(NODE_SIZE);
     char* name = malloc(11 * CHAR_SIZE);
 
-    strcpy(name, "sasaovch");
-    strcpy(node->type, "person");
+    strcpy_s(name, "sasaovch");
+    strcpy_s(node->type, "person");
 
     node->id = 0;
     node->name_length = 11;
