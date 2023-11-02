@@ -40,5 +40,5 @@ jobs:
           build-type: ${{ matrix.build_type }}
           
       - name: Test
-        working-directory: ${{ runner.workspace }}/build/main
+        working-directory: ${{ runner.workspace }}/build
         run: ctest --build-config ${{ matrix.build_type }} --output-on-failure
