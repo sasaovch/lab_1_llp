@@ -114,6 +114,7 @@ void set_pointer_offset_file(File* file, uint64_t offset) {
 
 void write_to_file(File* file, const void* write_buf, uint64_t size) {
     uint32_t bytes_written = fwrite(write_buf, size, 1, file->file);
+    fflush(file->file);
     error_exit(bytes_written, "Error writing to file");
 }
 
@@ -139,9 +140,17 @@ void db_close(Cursor* cursor) {
 void write_uint_32_to_file(Cursor* cursor, uint32_t number) {
     write_to_file(cursor->file, &(number), UINT32_T_SIZE);
 }
+
 void write_type_to_file(Cursor* cursor, char* type) {
     write_to_file(cursor->file, type, NAME_TYPE_LENGTH + 1);
 }
+
 void write_string_to_file(Cursor* cursor, char* string, uint32_t length) {
     write_to_file(cursor->file, string, CHAR_SIZE * length);
+}
+
+void truncate_file(Cursor* cursor, uint64_t offset) {
+    uint32_t file_descriptor = fileno(cursor->file->file);
+    int result = ftruncate(file_descriptor, offset);
+    error_exit(result, "Failed to clear the file.\n");
 }

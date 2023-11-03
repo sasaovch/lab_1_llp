@@ -38,4 +38,6 @@ void write_string_to_file(Cursor* cursor, char* string, uint32_t length);
 
 void print_test_format(const char *line, ...);
 
+void truncate_file(Cursor* cursor, uint64_t offset);
+
 #endif

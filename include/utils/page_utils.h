@@ -17,8 +17,9 @@ void create_new_page(Cursor* cursor, PageHeader* page_header, uint64_t curr_tabl
 
 uint32_t remove_empty_block(Cursor* cursor, PageHeader* first_header, PageHeader* second_header);
 
-uint32_t find_block_before(Cursor* cursor, const PageHeader* page_header, const Entity* entity);
+// uint32_t* find_block_before(Cursor* cursor, const PageHeader* page_header, const Entity* entity);
+uint32_t* find_block_before(Cursor* cursor, uint32_t goal_block, const Entity* entity);
 
-void cut_blocks(Cursor* cursor, const PageHeader* page_header, const uint64_t* pointer, const Entity* entity);
+void cut_blocks(Cursor* cursor, const PageHeader* page_header, const uint64_t* pointer, Entity* entity);
 
 #endif

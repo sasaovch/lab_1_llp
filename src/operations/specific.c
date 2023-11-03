@@ -1,7 +1,6 @@
 #include "../../include/include.h"
 #include "../../include/utils/page_utils.h"
 
-#define _CRT_SECURE_NO_WARNINGS
 uint32_t* check_constraints_create_relationship(
     Cursor* cursor, Relationship* relationship,
     FunctionHelper* function_helper

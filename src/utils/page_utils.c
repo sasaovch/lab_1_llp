@@ -1,6 +1,7 @@
 #include "../../include/io/io.h"
 #include "../../include/utils/page_utils.h"
 #include "../../include/data/constants.h"
+#include <stdint.h>
 #include <stdlib.h>
 
 uint32_t* find_all_blocks_to_delete(Cursor* cursor, uint32_t* counter, Entity* entity) {
@@ -47,6 +48,7 @@ void remove_blocks(Cursor* cursor, uint32_t counter, uint32_t* stack) {
         }
     }
     free(empty_body);
+    truncate_file(cursor, (cursor->number_of_pages + 1) * PAGE_SIZE);
 }
 
 uint64_t erase_entity(Cursor* cursor, uint64_t* pointer) {
@@ -96,6 +98,7 @@ void remove_emtpy_blocks(Cursor* cursor, PageHeader* page_header) {
         }
     }
     free(empty_block);
+    truncate_file(cursor, (cursor->number_of_pages + 1) * PAGE_SIZE);
 }
 
 PageHeader* move_blocks_higher(Cursor* cursor, uint64_t* pointer, PageHeader* old_header) {
@@ -167,13 +170,14 @@ uint32_t remove_empty_block(Cursor* cursor, PageHeader* first_header, PageHeader
         read_from_file(cursor->file, second_header, PAGE_HEADER_SIZE);
         read_from_file(cursor->file, copy_body, PAGE_BODY_SIZE);
         
-        if (second_header->next_block == 0 && cursor->number_of_pages == second_header->block_number) {
-            set_pointer_offset_file(cursor->file, first_header->block_number * PAGE_SIZE + UINT32_T_SIZE);
-            write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
-        } else {
-            set_pointer_offset_file(cursor->file, first_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
-        }
+        // if (second_header->next_block == 0 && cursor->number_of_pages == second_header->block_number) {
+        //     set_pointer_offset_file(cursor->file, first_header->block_number * PAGE_SIZE + UINT32_T_SIZE);
+        //     write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
+        //     //FIXME: кажется сюда нужно добавить транкат файла
+        // } else {
+        // }
 
+        set_pointer_offset_file(cursor->file, first_header->block_number * PAGE_SIZE + PAGE_HEADER_SIZE - UINT32_T_SIZE);
         write_to_file(cursor->file, &(second_header->offset), UINT32_T_SIZE);
         write_to_file(cursor->file, copy_body, PAGE_BODY_SIZE);
         memcpy(first_header, second_header, PAGE_HEADER_SIZE);
@@ -188,10 +192,9 @@ uint32_t remove_empty_block(Cursor* cursor, PageHeader* first_header, PageHeader
     free(copy_body);
     return last_block;
 }
-
-uint32_t find_block_before(Cursor* cursor, const PageHeader* page_header, const Entity* entity) {
-    uint32_t goal_block = page_header->block_number;
-    uint32_t prev_block = goal_block;
+uint32_t* find_block_before(Cursor* cursor, uint32_t goal_block, const Entity* entity) {
+    uint32_t* prev_block = malloc(UINT32_T_SIZE);
+    *prev_block = goal_block;
     uint32_t curr_block = entity->first_block;
     PageHeader* curr_header = (PageHeader*) malloc(PAGE_HEADER_SIZE);
     curr_header->block_number = 0;
@@ -199,36 +202,40 @@ uint32_t find_block_before(Cursor* cursor, const PageHeader* page_header, const 
 
         set_pointer_offset_file(cursor->file, curr_block * PAGE_SIZE);
         read_from_file(cursor->file, curr_header, PAGE_HEADER_SIZE);
-        prev_block = curr_block;
+        *prev_block = curr_block;
         curr_block = curr_header->next_block;
     }
     free(curr_header);
     return prev_block;
 }
 
-void cut_blocks(Cursor* cursor, const PageHeader* page_header, const uint64_t* pointer, const Entity* entity) {
+void cut_blocks(Cursor* cursor, const PageHeader* page_header, const uint64_t* pointer, Entity* entity) {
     PageHeader* old_header = (PageHeader*) malloc(PAGE_HEADER_SIZE);
     PageHeader* copy_header = (PageHeader*) malloc(PAGE_HEADER_SIZE);
 
     memcpy(old_header, page_header, PAGE_HEADER_SIZE);
     uint32_t last_block = remove_empty_block(cursor, old_header, copy_header);
-    uint32_t pre_last_block = find_block_before(cursor, old_header, entity);
+    uint32_t* pre_last_block = find_block_before(cursor, last_block, entity);
 
-    if (old_header->block_number == cursor->number_of_pages && old_header->block_number != entity->last_block) {
+    if (old_header->block_number == cursor->number_of_pages && 
+        ((old_header->block_number != entity->last_block) || (last_block != *pre_last_block))) {
         old_header->offset = 0;
 
         cursor->number_of_pages--;
         set_pointer_offset_file(cursor->file, *pointer + TYPE_OF_ELEMENT_SIZE + VALUE_TYPE_SIZE + UINT32_T_SIZE);
-        write_to_file(cursor->file, &(pre_last_block), UINT32_T_SIZE);
+        write_to_file(cursor->file, pre_last_block, UINT32_T_SIZE);
         uint32_t zero = ZERO;
-        set_pointer_offset_file(cursor->file, pre_last_block * PAGE_SIZE + UINT32_T_SIZE);
+        entity->last_block = *pre_last_block;
+        
+        set_pointer_offset_file(cursor->file, *pre_last_block * PAGE_SIZE + UINT32_T_SIZE);
         write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
+        truncate_file(cursor, (cursor->number_of_pages + 1) * PAGE_SIZE);
 
     } else {
         set_pointer_offset_file(cursor->file, *pointer + TYPE_OF_ELEMENT_SIZE + VALUE_TYPE_SIZE + UINT32_T_SIZE);
         write_to_file(cursor->file, &(last_block), UINT32_T_SIZE);
     }
-
+    free(pre_last_block);
     free(old_header);
     free(copy_header);
 }

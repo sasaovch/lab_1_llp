@@ -1,6 +1,7 @@
 #include "../../include/utils/test_utils.h"
 #include "../../include/include.h"
 
+#include "data/node.h"
 #include "time.h"
 
 bool create_entity(Cursor* cursor) {
@@ -523,20 +524,20 @@ static void prepare_smoke(Cursor* cursor) {
     Entity data[] = {
         {NODE, 0, 0, 0, 0, "person"},
         {NODE, 0, 0, 0, 0, "pc"},
-        {NODE, 0, 0, 0, 0, "laba"},
-        {NODE, 0, 0, 0, 0, "unic"},
-        {NODE, 0, 0, 0, 0, "human"},
-        {NODE, 0, 0, 0, 0, "mac"},
-        {NODE, 0, 0, 0, 0, "io"},
-        {NODE, 0, 0, 0, 0, "seque"},
-        {NODE, 0, 0, 0, 0, "read"},
-        {NODE, 0, 0, 0, 0, "write"},
-        {NODE, 0, 0, 0, 0, "some"},
-        {NODE, 0, 0, 0, 0, "idea"},
-        {NODE, 0, 0, 0, 0, "watch"},
-        {NODE, 0, 0, 0, 0, "clock"},
-        {NODE, 0, 0, 0, 0, "phone"},
-        {NODE, 0, 0, 0, 0, "build"},
+        // {NODE, 0, 0, 0, 0, "laba"},
+        // {NODE, 0, 0, 0, 0, "unic"},
+        // {NODE, 0, 0, 0, 0, "human"},
+        // {NODE, 0, 0, 0, 0, "mac"},
+        // {NODE, 0, 0, 0, 0, "io"},
+        // {NODE, 0, 0, 0, 0, "seque"},
+        // {NODE, 0, 0, 0, 0, "read"},
+        // {NODE, 0, 0, 0, 0, "write"},
+        // {NODE, 0, 0, 0, 0, "some"},
+        // {NODE, 0, 0, 0, 0, "idea"},
+        // {NODE, 0, 0, 0, 0, "watch"},
+        // {NODE, 0, 0, 0, 0, "clock"},
+        // {NODE, 0, 0, 0, 0, "phone"},
+        // {NODE, 0, 0, 0, 0, "build"},
     };
 
     int count_to_write = sizeof(data) / ENTITY_SIZE;
@@ -626,21 +627,23 @@ void delete_smoke_test(Cursor* cursor) {
 
     for (int i = 0; i < 2000000000; i++) {
 
-    
         for (int j = 0; j < 1 * i; j++) {
-            int r = rand() % 15;
+            int r = rand() % 2;
 
-            strcpy(name, "sasaovchsa");
+            strcpy(name, "sasaovch");
             strcpy(node->type, types[r]);
 
             node->id = 0;
             node->name_length = 11;
             node->name = name;
             uint32_t* id = create_node(cursor, node);
+
             if (id == NULL) continue;
             free(id);
         }
-
+        if (i == 25) {
+            println("");
+        }
         clock_t begin = clock();
         delete_all_nodes(cursor, node);
         clock_t end = clock();

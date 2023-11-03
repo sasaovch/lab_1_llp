@@ -275,6 +275,7 @@ void remove_bid_element(
     set_pointer_offset_file(cursor->file, *pointer + TYPE_OF_ELEMENT_SIZE + VALUE_TYPE_SIZE + UINT32_T_SIZE);
     write_to_file(cursor->file, &(deleted_blocks[blocks_to_empty]), UINT32_T_SIZE);
     if (is_cut) {
+        truncate_file(cursor, (cursor->number_of_pages + 1) * PAGE_SIZE);
         set_pointer_offset_file(cursor->file, deleted_blocks[blocks_to_empty] * PAGE_SIZE + UINT32_T_SIZE);
         write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
     }

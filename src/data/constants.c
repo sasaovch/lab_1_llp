@@ -2,7 +2,7 @@
 #include "../../include/data/data.h"
 #include "../../include/data/util_data.h"
 
-const uint32_t PAGE_SIZE = 80;
+const uint32_t PAGE_SIZE = 48;
 const uint32_t ZERO = 0;
 const uint64_t UINT32_T_SIZE = sizeof(uint32_t);
 const uint64_t CHAR_SIZE = sizeof(char);
