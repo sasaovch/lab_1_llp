@@ -1,7 +1,9 @@
 #include "../../include/operations/comparator.h"
-#include "../../include/data/data.h"
 
-bool is_less(void* v1, void* v2, ValueType type) {
+#include <stdint.h>
+#include <string.h>
+//FIXME:ggod
+bool is_less(const void *v1, const void *v2, ValueType type) {
     switch (type) {
         case INT: {
             return *((uint32_t*) v1) < *((uint32_t*) v2);
@@ -19,7 +21,7 @@ bool is_less(void* v1, void* v2, ValueType type) {
     }
 }
 
-bool is_greater(void* v1, void* v2, ValueType type) {
+bool is_greater(const void *v1, const void *v2, ValueType type) {
     switch (type) {
         case INT: {
             return *((uint32_t*) v1) > *((uint32_t*) v2);
@@ -37,7 +39,7 @@ bool is_greater(void* v1, void* v2, ValueType type) {
     }
 }
 
-bool is_equal(void* v1, void* v2, ValueType type) {
+bool is_equal(const void *v1, const void *v2, ValueType type) {
     switch (type) {
         case INT: {
             return *((uint32_t*) v1) == *((uint32_t*) v2);
@@ -55,7 +57,7 @@ bool is_equal(void* v1, void* v2, ValueType type) {
     }
 }
 
-bool return_true(void* d, void* n) {
+bool return_true(const void *d, const void *n) {
     (void) d;
     (void) n;
     return true;

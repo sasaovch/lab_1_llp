@@ -1,30 +1,40 @@
-#ifndef LAB_1_RELATIONSHIP_H
-#define LAB_1_RELATIONSHIP_H
+#pragma once
 
-#include "../io/io.h"
+#include "../managers/page_manager.h"
+#include "../data/entity.h"
+#include "../data/constants.h"
 
-void print_relationship(Relationship* relationship);
+typedef struct __attribute__((packed)) {
+    uint32_t id;
+    uint32_t parent_id;
+    uint32_t child_id;
+    char type[NAME_TYPE_LENGTH + 1];
+    char parent_type[NAME_TYPE_LENGTH + 1];
+    char child_type[NAME_TYPE_LENGTH + 1];
+} Relationship;
 
-void write_relationship_to_file(Cursor* cursor, PageHeader* page_header, Entity* entity, void* rel);
+void print_relationship(const Relationship *relationship);
 
-uint64_t get_size_of_relationship(void* rl);
+void write_relationship_to_file(Cursor *cursor, Page *page, Entity *entity, const void *rl, const uint32_t *id);
 
-uint32_t relationship_work_with_id(void* rl, uint32_t id, bool is_setter);
+uint64_t get_size_of_relationship(const void *rl);
 
-void* read_relationship(Cursor* cursor, PageHeader* page_header, void* element, const uint64_t* offset, char* body, uint32_t* read_block);
+uint32_t get_relationship_id(const void *rl);
 
-bool compare_relationship(void* rl_1, void* rl_2);
+void *read_relationship_from_file(const Cursor *cursor, Page *page, const uint64_t *offset_);
 
-bool compare_parent_relationship(void* rl_1, void* rl_2);
+bool compare_relationship(const void *rl_1, const void *rl_2);
 
-bool compare_child_relationship(void* rl_1, void* rl_2);
+bool compare_parent_relationship(const void *rl_1, const void *rl_2);
 
-bool compare_id_relationship(void* rl_1, void* rl_2);
+bool compare_child_relationship(const void *rl_1, const void *rl_2);
 
-bool compare_relationship_by_node(void* rl_1, void* rl_2);
+bool compare_id_relationship(const void *rl_1, const void *rl_2);
 
-void memcpy_relationship(void* element, char* stack, uint64_t* offset);
+bool compare_relationship_by_node(const void *rl_1, const void *rl_2);
 
-void* memget_relationship(void* element, char* stack, uint64_t* offset);
+void memcpy_relationship(const void *element, char *stack, uint64_t *offset);
 
-#endif
+void *memget_relationship(const char *stack, uint64_t *offset);
+
+void free_relationship(void *rl);

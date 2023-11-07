@@ -1,25 +1,17 @@
-#ifndef LAB_1_UTILS_H
-#define LAB_1_UTILS_H
+#pragma once
 
-#include "../io/io.h"
+#include "../managers/page_manager.h"
+#include "../data/entity.h"
 
-uint32_t* find_all_blocks_to_delete(Cursor* cursor, uint32_t* counter, Entity* entity);
+Stack *find_all_pages_to_delete(const Cursor *cursor, const Entity *entity);
 
-void remove_blocks(Cursor* cursor, uint32_t counter, uint32_t* stack);
+void remove_pages(const Cursor *cursor, Stack *stack);
 
-uint64_t erase_entity(Cursor* cursor, uint64_t* pointer);
+uint32_t find_last_page(const Cursor *cursor, uint32_t start_block);
 
-void remove_emtpy_blocks(Cursor* cursor, PageHeader* page_header);
+uint32_t find_page_before(const Cursor *cursor, uint32_t goal_page, uint32_t start_page);
 
-PageHeader* move_blocks_higher(Cursor* cursor, uint64_t* pointer, PageHeader* old_header);
+void write_big_string_to_file(Cursor *cursor, Page *page, Entity *entity, uint32_t length, const char *string);
 
-void create_new_page(Cursor* cursor, PageHeader* page_header, uint64_t curr_table_page_offset);
+void read_big_string_from_file(const Cursor *cursor, Page *page, char *string, uint32_t length, const uint64_t *offset);
 
-uint32_t remove_empty_block(Cursor* cursor, PageHeader* first_header, PageHeader* second_header);
-
-// uint32_t* find_block_before(Cursor* cursor, const PageHeader* page_header, const Entity* entity);
-uint32_t* find_block_before(Cursor* cursor, uint32_t goal_block, const Entity* entity);
-
-void cut_blocks(Cursor* cursor, const PageHeader* page_header, const uint64_t* pointer, Entity* entity);
-
-#endif

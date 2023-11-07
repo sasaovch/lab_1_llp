@@ -1,11 +1,13 @@
-#ifndef LAB_1_COMPARATOR_H
-#define LAB_1_COMPARATOR_H
+#pragma once
 
-#include "../data/data.h"
+#include "../data/enums.h"
 
-bool is_less(void* v1, void* v2, ValueType type);
-bool is_greater(void* v1, void* v2, ValueType type);
-bool is_equal(void* v1, void* v2, ValueType type);
-bool return_true(void* d, void* n);
+#include <stdbool.h>
 
-#endif
+bool is_less(const void *v1, const void *v2, ValueType type);
+
+bool is_greater(const void *v1, const void *v2, ValueType type);
+
+bool is_equal(const void *v1, const void *v2, ValueType type);
+
+bool return_true(const void *d, const void *n);

@@ -1,26 +1,44 @@
-#ifndef LAB_1_PROPERTY_H
-#define LAB_1_PROPERTY_H
+#pragma once
 
-#include "../io/io.h"
+#include "../data/enums.h"
+#include "../data/constants.h"
+#include "../managers/page_manager.h"
+#include "./entity.h"
+#include <stdint.h>
 
-void write_property_to_file(Cursor* cursor, PageHeader* page_header, Entity* entity, void* pr);
+typedef struct __attribute__((packed)) {
+    ValueType value_type;
+    uint32_t subject_id;
+    uint32_t value_length;
+    char type[NAME_TYPE_LENGTH + 1];
+    char subject_type[NAME_TYPE_LENGTH + 1];
+    void *value;
+} Property;
 
-void print_property(Property* property);
+void write_property_to_file(Cursor *cursor, Page *page, Entity *entity, const void *pr, const uint32_t *id);
 
-void* read_property(Cursor* cursor, PageHeader* page_header, void* element, const uint64_t* offset_, char* body, uint32_t* read_block);
+void print_property(const Property *property);
 
-uint64_t get_size_of_property(void* pr);
+void *read_property_from_file(const Cursor *cursor, Page *page, const uint64_t *offset_);
 
-void memcpy_property(void* element, char* stack, uint64_t* offset);
+uint64_t get_size_of_property(const void *pr);
 
-void* memget_property(void* element, char* stack, uint64_t* offset);
+void memcpy_property(const void *element, char *stack, uint64_t *offset);
 
-uint32_t property_work_with_id(void* pr, uint32_t id, bool is_setter);
+void *memget_property(const char *stack, uint64_t *offset);
 
-bool compare_property_by_subject(void* pr_1, void* pr_2);
+uint32_t get_property_id(const void *pr);
 
-bool compare_subject_property(void* pr_1, void* pr_2) ;
+bool compare_property_by_subject(const void *pr_1, const void *pr_2);
 
-bool compare_key_property(void* pr_1, void* pr_2) ;
+bool compare_subject_property(const void *pr_1, const void *pr_2);
 
-#endif
+bool compare_key_property(const void *pr_1, const void *pr_2);
+
+void free_property(void *pr);
+
+void read_value_from_file(
+        const Cursor *cursor, Page *page,
+        Property *property, uint32_t value_length,
+        const char *body, uint64_t offset
+);

@@ -1,146 +1,159 @@
 #include "../../include/data/iterator.h"
-#include <stdint.h>
-#include <stdlib.h>
 
+#include "data/constants.h"
+#include "data/page.h"
+#include "managers/page_manager.h"
+#include "utils/checker.h"
+#include "utils/io_utils.h"
+#include "utils/logger.h"
 
-void* next(Iterator* iterator) {
-        return iterator->next_element;
+#include <string.h>
+////FIXME: good
+void *next(const Iterator *iterator) {
+    return iterator->element;
 }
 
-bool has_next(Iterator* iterator) {
-    if (iterator == NULL) {
+/* 
+    offset_ указывает на следующие элемент
+    read_block указывает на блок, в котором находится следующий элемент
+*/
+bool has_next(Iterator *iterator) {
+    LOG_DEBUG("In has_next", "");
+    if (check_is_null_arg(iterator, "iterator")) {
         return false;
     }
     uint64_t offset = *(iterator->offset_);
     uint32_t read_block = *(iterator->read_block_);
 
-    Cursor* cursor = iterator->cursor;
-    PageHeader* page_header = iterator->page_header;
-    
-    char* body = iterator->body;
-    void* element = iterator->element;
+    const Cursor *cursor = iterator->cursor;
 
     while (read_block != 0) {
-        uint64_t page_offset = read_block * PAGE_SIZE;
-
-        set_pointer_offset_file(cursor->file, page_offset);
-        read_from_file(cursor->file, page_header, PAGE_HEADER_SIZE);  
-        read_from_file(cursor->file, body, PAGE_BODY_SIZE);
+        Page* page = read_page_from_file(cursor, read_block);
+        PageHeader *page_header = page->page_header;
 
         while (offset < page_header->offset) {
-
-            element = iterator->function_helper->read_big_element(cursor, page_header, element, &(offset), body, &(read_block));
+            void *element = iterator->function_helper->read_element_from_file(cursor, page, &(offset));
 
             if (iterator->function_helper->condition(element, iterator->helper)) {
-                *(iterator->offset_) = offset + iterator->function_helper->get_size_of_element(element) % PAGE_BODY_SIZE;
-                *(iterator->read_block_) = read_block;
-                iterator->next_element = element;
+
+                *(iterator->offset_) = (offset + iterator->function_helper->get_size_of_element(element)) % PAGE_BODY_SIZE;
+                *(iterator->read_block_) = page->page_header->block_number;
+                iterator->element = element;
+                
+                free_page(page);
                 return true;
             }
-            offset = (offset + iterator->function_helper->get_size_of_element(element)) % PAGE_BODY_SIZE;
+            offset = offset + iterator->function_helper->get_size_of_element(element) % PAGE_BODY_SIZE;
+            iterator->function_helper->free_element(element);
         }
         read_block = page_header->next_block;
+        free_page(page);
         offset = 0;
     }
     return false;
 }
 
-void* entity_next(EntityIterator* entity_iterator) {
-        return entity_iterator->iterator->next_element;
+void *entity_next(const EntityIterator *entity_iterator) {
+        return entity_iterator->iterator->element;
 }
 
-bool entity_has_next(EntityIterator* entity_iterator) {
-    Iterator* iterator = entity_iterator->iterator;
-    uint64_t offset = *(iterator->offset_);
-    uint32_t read_block = *(iterator->read_block_);
-    
-    Cursor* cursor = entity_iterator->cursor;
-    PageHeader* page_header = iterator->page_header;
-    Entity* entity = iterator->entity;
-    
-    char* body = iterator->body;
-    void* element = iterator->element;
-
-    while (read_block != 0) {
-        uint64_t page_offset = read_block * PAGE_SIZE;
-
-        set_pointer_offset_file(cursor->file, page_offset);
-        read_from_file(cursor->file, page_header, PAGE_HEADER_SIZE);  
-        read_from_file(cursor->file, body, PAGE_BODY_SIZE);
-
-        while (offset < page_header->offset) {
-
-            element = iterator->function_helper->read_big_element(cursor, page_header, element, &(offset), body, &(read_block));
-
-            if (iterator->function_helper->condition(element, iterator->helper)) {
-                iterator->cursor = cursor;
-                iterator->page_header = page_header;
-                iterator->entity = entity;
-                uint64_t size_of_element = iterator->function_helper->get_size_of_element(element);
-                *(iterator->offset_) = (offset + size_of_element) % PAGE_BODY_SIZE;
-                *(iterator->read_block_) = read_block;
-                iterator->next_element = element;
-                return true;
-            }
-            uint64_t size_of_element = iterator->function_helper->get_size_of_element(element);
-            offset = (offset + size_of_element) % PAGE_BODY_SIZE;
-        }
-        read_block = page_header->next_block;
-        offset = 0;
+/* 
+    offset_ указывает на следующие элемент
+    entity_iterator->page указывает на блок, в котором находится следующий элемент
+*/
+bool entity_has_next(EntityIterator *entity_iterator) {
+    LOG_DEBUG("In entity_has_next", "");
+    if (check_is_null_arg(entity_iterator, "entity_iterator")) {
+        return false;
     }
-
-    char* entity_body = entity_iterator->body;
-    PageHeader* entity_page_header = entity_iterator->page_header;
-    Entity* new_entity = (Entity*) malloc(ENTITY_SIZE);
-    uint32_t page_num = *(entity_iterator->read_block_);
+    
+    Iterator *iterator = entity_iterator->iterator;
+    bool has_next_element = has_next(iterator);
+    if (has_next_element) return true;
+    
+    const Cursor *cursor = entity_iterator->cursor;
+    Entity *old_entity = entity_iterator->entity;
+    Entity *new_entity = (Entity*) malloc(ENTITY_SIZE);
+    uint32_t page_num = 0;
 
     do {
-        for (uint64_t i = *(entity_iterator->offset_) / ENTITY_SIZE; i < (entity_page_header->offset / ENTITY_SIZE); i++) {
-            memcpy(new_entity, entity_body + i * ENTITY_SIZE, ENTITY_SIZE);
-            if (new_entity->element_type == entity->element_type) {
+        Page *entity_page = entity_iterator->page;
+
+        for (uint64_t i = *(entity_iterator->offset_) / ENTITY_SIZE; i < (entity_page->page_header->offset / ENTITY_SIZE); i++) {
+            memcpy(new_entity, entity_page->page_body + i * ENTITY_SIZE, ENTITY_SIZE);
+            
+            if (new_entity->element_type == old_entity->element_type) {
 
                 *(entity_iterator->offset_) = (i + 1) * ENTITY_SIZE;
-                *(entity_iterator->read_block_) = entity_page_header->block_number;
-
-                entity_iterator->page_header = entity_page_header;
                 entity_iterator->entity = new_entity;
-                entity_iterator->body = entity_body;
 
-                *(iterator->read_block_) = entity_iterator->entity->first_block;
+                *(iterator->read_block_) = new_entity->first_page;
                 *(iterator->offset_) = 0;
-                iterator->entity = entity;
+                iterator->entity = new_entity;
                 
                 return entity_has_next(entity_iterator);
             }
         }
-        page_num = entity_page_header->next_block;
+        page_num = entity_page->page_header->next_block;
         *(entity_iterator->offset_) = 0;
-        set_pointer_offset_file(cursor->file, page_num * PAGE_SIZE);
 
-        read_from_file(cursor->file, entity_page_header, PAGE_HEADER_SIZE);        
-        read_from_file(cursor->file, entity_body, PAGE_BODY_SIZE);
+        free_page(entity_page);
+        entity_iterator->page = read_page_from_file(cursor, page_num);
     } while (page_num != 0);
 
     return false;
 }
 
-void free_iter(Iterator* iterator) {
-    free(iterator->body);
-    free(iterator->element);
-    free(iterator->offset_);
-    free(iterator->read_block_);
+void free_iter(Iterator *iterator) {
+    if (check_is_null_arg(iterator, "iterator")) return ;
     free(iterator->entity);
-    free(iterator->page_header);
-    free(iterator->function_helper);
+    free(iterator->read_block_);
+    free(iterator->offset_);
+    free(iterator->element);
     free(iterator);
 }
 
-void free_entity_iter(EntityIterator* entity_iterator) {
-    free(entity_iterator->body);
-    free(entity_iterator->offset_);
-    free(entity_iterator->read_block_);
-    free(entity_iterator->entity);
-    free(entity_iterator->page_header);
+void free_entity_iter(EntityIterator *entity_iterator) {
+    if (check_is_null_arg(entity_iterator, "entity_iterator")) return ;
     free_iter(entity_iterator->iterator);
+    free_page(entity_iterator->page);
+    free(entity_iterator->offset_);
     free(entity_iterator);
+}
+
+EntityIterator *get_entity_iterator(Cursor *cursor, TypeOfElement element_type) {
+
+    Entity *entity = malloc(ENTITY_SIZE);
+    uint64_t *offset_ = malloc(UINT64_T_SIZE);
+    EntityIterator *entity_iterator = (EntityIterator*) malloc(EMTITY_ITERATOR_SIZE);
+    
+    int page_num = 0;
+
+    do {
+        Page *page = read_page_from_file(cursor, page_num);
+
+        for (uint64_t i = 0; i < (page->page_header->offset / ENTITY_SIZE); i++) {
+            memcpy(entity, page->page_body + i * ENTITY_SIZE, ENTITY_SIZE);
+            if (element_type == entity->element_type) {
+
+               *offset_ = (i + 1) * ENTITY_SIZE;
+
+                entity_iterator->cursor = cursor;
+                entity_iterator->entity = entity;
+                entity_iterator->page = page;
+                entity_iterator->offset_ = offset_;
+                
+                return entity_iterator;
+            }
+        }
+        page_num = page->page_header->next_block;
+        free_page(page);
+    } while (page_num != 0);
+    
+    free(entity);
+
+    free(offset_);
+    free(entity_iterator);
+
+    return NULL;
 }
