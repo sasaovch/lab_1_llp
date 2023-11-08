@@ -127,7 +127,7 @@ EntityIterator *get_entity_iterator(Cursor *cursor, TypeOfElement element_type) 
     uint64_t *offset_ = malloc(UINT64_T_SIZE);
     EntityIterator *entity_iterator = (EntityIterator*) malloc(EMTITY_ITERATOR_SIZE);
     
-    int page_num = 0;
+    int page_num = START_PAGE;
 
     do {
         Page *page = read_page_from_file(cursor, page_num);

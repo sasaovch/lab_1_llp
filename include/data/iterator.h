@@ -3,9 +3,10 @@
 #include "../managers/file_manager.h"
 #include "../data/entity.h"
 #include "../data/function_helper.h"
+#include <stdint.h>
 
 typedef struct {
-    const Cursor *cursor;
+    Cursor *cursor;
     Entity *entity;
     const FunctionHelper *function_helper;
 
@@ -17,7 +18,7 @@ typedef struct {
 } Iterator;
 
 typedef struct{
-    const Cursor *cursor;
+    Cursor *cursor;
     Entity *entity;
     Page *page;
     uint64_t *offset_;

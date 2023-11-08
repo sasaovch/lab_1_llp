@@ -18,7 +18,7 @@ typedef struct __attribute__((packed)) {
 
 void print_entity(const Entity *entity);
 
-void erase_entity(const Cursor *cursor, const uint64_t *pointer);
+void erase_entity(Cursor *cursor, const uint64_t *pointer);
 
 void create_page_for_entity(const Cursor *cursor);
 
@@ -26,4 +26,4 @@ Entity *get_entity(const Cursor *cursor, TypeOfElement element_type, const char 
 
 Entity *create_entity(Cursor *cursor, const Entity *new_entity);
 
-bool delete_entity(const Cursor *cursor, const Entity *entity);
+bool delete_entity(Cursor *cursor, const Entity *entity);

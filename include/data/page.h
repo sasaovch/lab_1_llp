@@ -1,8 +1,5 @@
 #pragma once
 
-#include "./file.h"
-#include "./stack.h"
-
 #include <stdint.h>
 
 typedef struct __attribute__((packed)) {
@@ -15,13 +12,6 @@ typedef struct {
     PageHeader *page_header;
     char *page_body;
 } Page;
-
-typedef struct {
-    File *file;
-    uint32_t last_entity_block;
-    uint32_t number_of_pages;
-    Stack *empty_pages;
-} Cursor;
 
 Page *new_page(void);
 

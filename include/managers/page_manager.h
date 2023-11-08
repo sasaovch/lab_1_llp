@@ -3,6 +3,7 @@
 #include "../managers/page_manager.h"
 #include "../managers/file_manager.h"
 #include "../data/page.h"
+#include "../data/cursor.h"
 #include <stdint.h>
 
 Cursor *db_open(const char *filename);

@@ -1,11 +1,13 @@
 #include "../../include/utils/test_utils.h"
 
 #include "../../include/utils/io_utils.h"
+#include "../../include/utils/stack_utils.h"
 #include "../../include/operations/specific.h"
 #include "../../include/operations/crud_methods.h"
-#include "data/iterator.h"
 #include "utils/logger.h"
 
+#include <stddef.h>
+#include <stdint.h>
 #include <string.h>
 #include "time.h"
 
@@ -147,6 +149,7 @@ bool create_relationships_test(Cursor *cursor) {
 
 bool create_relationships_test_1(Cursor *cursor) {
     Relationship relationships[] = {
+         {1, 1,2, "play", "person", "pc"},
         {0, 0, 0, "play", "person", "pc"},
         {0, 1,0, "play", "person", "pc"},
         {0, 3,0, "play", "person", "pc"},
@@ -167,11 +170,16 @@ bool create_relationships_test_1(Cursor *cursor) {
 bool create_properties_test(Cursor *cursor) {
     uint32_t age = 20;
     float fl = 1.1f;
+    char *name1 = (char*) malloc(BLOCK_SIZE + PAGE_BODY_SIZE);
+    for (uint32_t i = 0; i < BLOCK_SIZE + PAGE_BODY_SIZE - 1; i++) {
+        name1[i] = 'b';
+    }
+    name1[BLOCK_SIZE + PAGE_BODY_SIZE - 1] = '\0';
     Property property[] = {
         {INT,2, UINT32_T_SIZE, "age","person",  &(age)},
         {INT,0, UINT32_T_SIZE, "age","person",  &(age)},
         {INT,3, UINT32_T_SIZE, "age","person",  &(age)},
-        {STRING,1, 6, "color", "person",  "black"},
+        {STRING,0, (BLOCK_SIZE + PAGE_BODY_SIZE), "color", "person",  name1},
     };
     Property wrong_property[] = {
         {INT,0, UINT32_T_SIZE, "age","person",  &(age)},
@@ -241,23 +249,23 @@ bool delete_relationships_test(Cursor *cursor) {
     Relationship relationship = {1, 1,2, "play", "person", "pc"};
     
     if (delete_relationship_by_id(cursor, &(non_exist_relationship))) {
-        print_test_format("Failed to delete relationship");
+        print_test_format("Failed, deleted non existing relationship");
         return false;
     };
     
-    if (!delete_relationship_by_id(cursor, &(relationship))) {
+    if (!delete_relationship_by_parent(cursor, &(relationship))) {
         print_test_format("Failed to delete relationship");
         return false;
     };
 
-    Iterator *iterator = select_relationship_by_id(cursor, &(relationship));
+    Iterator *iterator = select_relationship_by_parent(cursor, &(relationship));
     if (has_next(iterator)) {
         free_iter(iterator);
         print_test_format("Fail, deleted non existing relationship");
         return false;
     }
 
-    if (delete_relationship_by_id(cursor, &(relationship))) {
+    if (delete_relationship_by_parent(cursor, &(relationship))) {
         free_iter(iterator);
         print_test_format("Deleted non existing relationship");
         return false;
@@ -286,11 +294,11 @@ bool delete_properties_test(Cursor *cursor) {
 
 bool update_nodes_test(Cursor *cursor) {
     Node old_nodes[] = {
-        {0, 9,"person", "sasaovch"},
+        {1, 9,"person", "sasaovch"},
     };
 
     Node new_nodes[] = {
-        {0, 2, "person", "I"},
+        {1, 2, "person", "I"},
     };
 
     int count_to_write = sizeof(old_nodes) / sizeof(Node);
@@ -317,9 +325,28 @@ bool update_nodes_test(Cursor *cursor) {
     return true;
 }
 
+bool update_nodes_smoke_test(Cursor *cursor) {
+    Node old_nodes[] = {
+        {1, 9,"person", "sasaovch"},
+    };
+
+    Node new_nodes[] = {
+        {1, 2, "person", "I"},
+    };
+
+    int count_to_write = sizeof(old_nodes) / sizeof(Node);
+    for (int i = 0; i < count_to_write; i++) {
+        if (!update_all_nodes(cursor, &(old_nodes[i]), &(new_nodes[i]))) {
+            print_test_format("Fail to update node %i", i);
+            return false;
+        }; 
+    }
+    return true;
+}
+
 bool update_relationships_test(Cursor *cursor) {
     Relationship old_relationships[] = {
-        {2, 3,2, "play", "person", "pc"},
+        {3, 3,2, "play", "person", "pc"},
     };
     Relationship new_relationships[] = {
         {0, 3,5, "play", "person", "pc"},
@@ -424,15 +451,32 @@ void select_relationships_by_node_test(Cursor *cursor) {
     }
 }
 
+// bool create_test(Cursor *cursor) {
+//     print_test_format("Start to create");
+//     bool result = create_entities_test(cursor) &&
+//         create_nodes_test(cursor) &&
+//         create_relationships_test(cursor) &&
+//         create_properties_test(cursor) &&
+        
+//         create_entities_test_1(cursor) &&
+//         create_nodes_test_1(cursor) &&
+//         create_relationships_test_1(cursor);
+//     if (result) {
+//         print_test_format("Created successfuly");
+//     } else {
+//         print_test_format("Failed to create elments");
+//     }
+//     return result;
+// }
 bool create_test(Cursor *cursor) {
     print_test_format("Start to create");
-    bool result = create_entities_test(cursor) &&
-        create_nodes_test(cursor) &&
-        create_relationships_test(cursor) &&
-        create_properties_test(cursor) &&
+    bool result = create_entities_test(cursor) ;
+        create_nodes_test(cursor) ;
+        create_relationships_test(cursor) ;
+        create_properties_test(cursor) ;
         
-        create_entities_test_1(cursor) &&
-        create_nodes_test_1(cursor) &&
+        create_entities_test_1(cursor) ;
+        create_nodes_test_1(cursor) ;
         create_relationships_test_1(cursor);
     if (result) {
         print_test_format("Created successfuly");
@@ -570,21 +614,21 @@ void delete_smoke_test(Cursor *cursor) {
 
     char *types[] = {
         "person", 
-        "pc",
-        "laba",
-        "unic",
-        "human",
-        "mac",
-        "io",
-        "seque",
-        "read",
-        "write",
-        "some",
-        "idea",
-        "watch",
-        "clock",
-        "phone",
-        "build"
+        // "pc",
+        // "laba",
+        // "unic",
+        // "human",
+        // "mac",
+        // "io",
+        // "seque",
+        // "read",
+        // "write",
+        // "some",
+        // "idea",
+        // "watch",
+        // "clock",
+        // "phone",
+        // "build"
     };
     Node *node = (Node*) malloc(NODE_SIZE);
     char *name1 = (char*) malloc(BLOCK_SIZE + PAGE_BODY_SIZE);
@@ -594,7 +638,7 @@ void delete_smoke_test(Cursor *cursor) {
     name1[BLOCK_SIZE + PAGE_BODY_SIZE - 1] = '\0';
     char *name = malloc((BLOCK_SIZE + PAGE_BODY_SIZE)* CHAR_SIZE);
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 1000; i++) {
 
         for (int j = 0; j < 1 * i; j++) {
             int r = rand() % 1;
@@ -607,9 +651,6 @@ void delete_smoke_test(Cursor *cursor) {
             node->name = name;
 
             create_node(cursor, node);
-        }
-        if (i == 25) {
-            println("");
         }
         clock_t begin = clock();
         delete_all_nodes(cursor, node);
@@ -627,21 +668,21 @@ void update_smoke_test(Cursor *cursor) {
 
     char *types[] = {
         "person", 
-        "pc",
-        "laba",
-        "unic",
-        "human",
-        "mac",
-        "io",
-        "seque",
-        "read",
-        "write",
-        "some",
-        "idea",
-        "watch",
-        "clock",
-        "phone",
-        "build"
+        // "pc",
+        // "laba",
+        // "unic",
+        // "human",
+        // "mac",
+        // "io",
+        // "seque",
+        // "read",
+        // "write",
+        // "some",
+        // "idea",
+        // "watch",
+        // "clock",
+        // "phone",
+        // "build"
     };
     Node *node = (Node*) malloc(NODE_SIZE);
     char *name = malloc(11 * CHAR_SIZE);
@@ -662,7 +703,7 @@ void update_smoke_test(Cursor *cursor) {
         }
 
         clock_t begin = clock();
-        update_nodes_test(cursor);
+        update_nodes_smoke_test(cursor);
         clock_t end = clock();
 
         double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
@@ -734,4 +775,18 @@ void create_n_nodes_test(Cursor *cursor, int n) {
     }
     free(node);
     free(name);
+}
+
+void stack_test(void) {
+    char *filename = "stack";
+    // Cursor *cursor = db_open(filename);
+    // for (uint32_t i = 0; i < PAGE_SIZE * 3; i++) {
+    //     push_in_stack(cursor, i);
+    // }
+    // db_close(cursor);
+
+    Cursor *n_cursor = db_open(filename);
+    for (uint32_t i = 0; i < PAGE_SIZE * 3; i++) {
+        println("%llu", pop_from_stack(n_cursor));
+    }
 }

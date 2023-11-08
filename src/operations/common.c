@@ -1,6 +1,7 @@
 #include "../../include/operations/common.h"
 
 #include "../../include/utils/io_utils.h"
+#include "../../include/utils/stack_utils.h"
 #include "utils/checker.h"
 #include "utils/logger.h"
 #include "utils/page_utils.h"
@@ -69,7 +70,7 @@ bool create_element(
 }
 
 Iterator *select_element(
-    const Cursor *cursor,
+    Cursor *cursor,
     TypeOfElement element_type, const char *type,
     uint64_t size_of_element_malloc, 
     const void *helper, 
@@ -162,7 +163,7 @@ void *find_element(
     page указывает на следующую страницу
 */
 void remove_bid_element(
-    const Cursor *cursor, const Page *page, 
+    Cursor *cursor, const Page *page, 
     Entity *entity, uint64_t size_of_element,
     const uint64_t *pointer
 ) {
@@ -188,7 +189,7 @@ void remove_bid_element(
     //блок за ни, (если start_page_number == entity->last_page, то они равны)
     uint32_t next_page_number = start_page_number;
 
-    push(cursor->empty_pages, start_page_number);
+    push_in_stack(cursor, start_page_number);
     for (uint32_t i = 0; i < page_numbers; i++) {
         n_page->page_header->offset = 0;
         memcpy(n_page->page_body, empty_body, PAGE_BODY_SIZE);
@@ -221,7 +222,7 @@ void remove_bid_element(
 }
 
 void remove_small_element(
-    const Cursor *cursor, const Page *page,
+    Cursor *cursor, const Page *page,
     Entity *entity, uint32_t offset, 
     uint64_t size_of_element, const uint64_t *pointer
 ) {
@@ -248,7 +249,7 @@ void remove_small_element(
         uint32_t prev_page_number = find_page_before(cursor, delete_page_number, entity->first_page);
         uint32_t next_page_number = n_page->page_header->next_block;
 
-        push(cursor->empty_pages, delete_page_number);
+        push_in_stack(cursor, delete_page_number);
 
         //если блок является первым блоком в цепочке и не является последним, то нужно изменить начальный блок для entity
         if (delete_page_number == entity->first_page && delete_page_number != entity->last_page) {
@@ -291,7 +292,7 @@ void remove_small_element(
 }
 
 bool delete_element(
-    const Cursor *cursor, const void *element, 
+    Cursor *cursor, const void *element, 
     uint64_t size_of_sturcture, 
     const void *type, TypeOfElement element_type, 
     const FunctionHelper *function_helper

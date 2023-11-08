@@ -1,9 +1,14 @@
 #include "../../include/operations/specific.h"
 
 #include "../../include/operations/crud_methods.h"
+#include "data/constants.h"
+#include "data/enums.h"
+#include "data/node.h"
+#include "operations/common.h"
 #include "utils/checker.h"
 #include "utils/logger.h"
 
+#include <stdint.h>
 #include <string.h>
 
 bool check_constraints_create_relationship(
@@ -90,33 +95,51 @@ void delete_relationship_iter(EntityIterator *entity_iterator) {
     Iterator *iterator = entity_iterator->iterator;
     uint64_t offset = *(iterator->offset_) - RELATIONSHIP_SIZE;
     uint32_t read_block = *(iterator->read_block_);
-    
-    const Cursor *cursor = iterator->cursor;
-    char *new_body = malloc(PAGE_BODY_SIZE);
+
+    Cursor *cursor = iterator->cursor;
     Page *page = read_page_from_file(cursor, read_block);
-    
-    memcpy(new_body, page->page_body, offset);
-    memcpy(new_body + offset, page->page_body + offset + RELATIONSHIP_SIZE, PAGE_BODY_SIZE - offset - RELATIONSHIP_SIZE);
+    uint32_t next_page = page->page_header->next_block;
+    uint64_t pointer = (*(entity_iterator->offset_) - 1) * ENTITY_SIZE + entity_iterator->page->page_header->block_number * PAGE_SIZE;
 
-    uint64_t new_offset = page->page_header->offset - RELATIONSHIP_SIZE;
-    page->page_header->offset = new_offset;
-    memcpy(page->page_body, new_body, PAGE_BODY_SIZE);
-        
-    write_page_to_file_flush(cursor, page);
-    
-    uint32_t new_block_number = page->page_header->block_number;
-    *(entity_iterator->iterator->offset_) = new_offset;
-    *(entity_iterator->iterator->read_block_) = new_block_number;
+    remove_small_element(cursor, page, iterator->entity, offset, RELATIONSHIP_SIZE, &(pointer));
 
-    free(new_body);
+    if (page->page_header->block_number != read_block && page->page_header->block_number != 0) {
+        *(entity_iterator->iterator->offset_) = 0;
+        *(entity_iterator->iterator->read_block_) = next_page;
+    } else {
+        *(entity_iterator->iterator->offset_) = offset;
+        *(entity_iterator->iterator->read_block_) = read_block;
+    }
 }
 
 void delete_property_iter(EntityIterator *entity_iterator) {
     Property *delete_prop = entity_iterator->iterator->element;
     Iterator *iterator = entity_iterator->iterator;
-    const Cursor *cursor = iterator->cursor;
-    
+    Cursor *cursor = iterator->cursor;
+    // uint64_t size_of_element = iterator->function_helper->get_size_of_element(delete_prop);
+    // uint64_t offset = *(iterator->offset_) - size_of_element;
+    // uint32_t read_block = *(iterator->read_block_);
+
     delete_element(cursor, delete_prop, PROPERTY_SIZE, delete_prop->type, PROPERTY, iterator->function_helper);
+    // Page *page = read_page_from_file(cursor, read_block);
+    // uint32_t next_page = page->page_header->next_block;
+    
+    // uint64_t pointer = (*(entity_iterator->offset_) - 1) * ENTITY_SIZE + entity_iterator->page->page_header->block_number * PAGE_SIZE;
+
+    // if (size_of_element > PAGE_BODY_SIZE) {
+    //     // remove_bid_element(cursor, page, iterator->entity, size_of_element, &(pointer));
+    //     *(entity_iterator->iterator->offset_) = 0;
+    //     *(entity_iterator->iterator->read_block_) = page->page_header->block_number;
+    // } else {
+    //     remove_small_element(cursor, page, iterator->entity, offset, size_of_element, &(pointer));
+    //     if (page->page_header->block_number != read_block && page->page_header->block_number != 0) {
+    //         *(entity_iterator->iterator->offset_) = 0;
+    //         *(entity_iterator->iterator->read_block_) = next_page;
+    //     } else {
+    //         *(entity_iterator->iterator->offset_) = offset;
+    //         *(entity_iterator->iterator->read_block_) = read_block;
+    //     }
+    // }
 }
 
 bool delete_node_with_others(
@@ -135,7 +158,7 @@ bool delete_node_with_others(
     free_entity_iter(entity_iterator_prop);
     
     FunctionHelper *function_helper = (FunctionHelper*) malloc(FUNCTION_HELPER);
-    function_helper->condition = compare_id_node;
+    function_helper->condition = greater_id_node;
     function_helper->get_size_of_element = get_size_of_node;
     function_helper->write_element_to_file = write_node_to_file;
     function_helper->read_element_from_file = read_node_from_file;

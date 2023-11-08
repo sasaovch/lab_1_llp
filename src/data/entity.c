@@ -2,11 +2,14 @@
 
 #include "../../include/utils/io_utils.h"
 #include "../../include/utils/page_utils.h"
+#include "../../include/utils/stack_utils.h"
 #include "../../include/utils/checker.h"
 #include "data/constants.h"
+#include "managers/file_manager.h"
 #include "managers/page_manager.h"
 #include "utils/logger.h"
 
+#include <stdint.h>
 #include <string.h>
 //FIXME: good
 
@@ -77,7 +80,10 @@ Entity *create_entity(Cursor *cursor, const Entity *new_entity) {
     }
 
     uint32_t last_entity_page = find_last_page(cursor, START_PAGE);
+    if (last_entity_page < START_PAGE) last_entity_page = START_PAGE;
+    
     Page *page = read_page_from_file(cursor, last_entity_page);
+    if (page->page_header->block_number < last_entity_page) page->page_header->block_number = last_entity_page; 
 
     Page *n_page = page;
     if (page->page_header->offset + ENTITY_SIZE > PAGE_BODY_SIZE) {
@@ -110,7 +116,7 @@ Entity *create_entity(Cursor *cursor, const Entity *new_entity) {
     return entity;
 }
 
-void erase_entity(const Cursor *cursor, const uint64_t *pointer) {
+void erase_entity(Cursor *cursor, const uint64_t *pointer) {
     LOG_DEBUG("In erase_entity", "");
     if (check_is_null_arg(cursor, "cursor") ||
         check_is_null_arg(pointer, "pointer")) {
@@ -130,13 +136,30 @@ void erase_entity(const Cursor *cursor, const uint64_t *pointer) {
     free(page->page_body);
     page->page_body = new_body;
     page->page_header->offset -= ENTITY_SIZE;
+    uint32_t new_offset = page->page_header->offset;
 
-    write_page_to_file(cursor, page);
+    write_page_to_file_flush(cursor, page);
+
+    if (new_offset == 0) {
+        uint32_t delete_page_number = page->page_header->block_number;
+        uint32_t prev_page_number = find_page_before(cursor, delete_page_number, START_PAGE);
+        uint32_t next_page_number = page->page_header->next_block;
+
+        if (delete_page_number != START_PAGE) {
+            set_pointer_offset_file(cursor->file, prev_page_number * BLOCK_SIZE + UINT32_T_SIZE);
+            write_uint_32_to_file(cursor->file, next_page_number);
+            
+            push_in_stack(cursor, delete_page_number);
+        
+            set_pointer_offset_file(cursor->file, delete_page_number * BLOCK_SIZE + UINT32_T_SIZE);
+            write_uint_32_to_file(cursor->file, 0);
+        }
+    }
 
     free_page(page);
 }
 
-bool delete_entity(const Cursor *cursor, const Entity *entity) {
+bool delete_entity(Cursor *cursor, const Entity *entity) {
     LOG_DEBUG("In delete_entity", "");
     if (check_is_null_arg(cursor, "cursor") ||
         check_is_null_arg(entity, "entity")) {
@@ -156,6 +179,8 @@ bool delete_entity(const Cursor *cursor, const Entity *entity) {
     Stack *stack = find_all_pages_to_delete(cursor, delete_entity);
     remove_pages(cursor, stack);
     erase_entity(cursor, pointer);
+
+    flush(cursor->file);
 
     free(pointer);
     free(stack);

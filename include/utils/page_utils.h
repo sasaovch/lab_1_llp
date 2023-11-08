@@ -5,7 +5,7 @@
 
 Stack *find_all_pages_to_delete(const Cursor *cursor, const Entity *entity);
 
-void remove_pages(const Cursor *cursor, Stack *stack);
+void remove_pages(Cursor *cursor, Stack *stack);
 
 uint32_t find_last_page(const Cursor *cursor, uint32_t start_block);
 

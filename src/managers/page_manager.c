@@ -2,10 +2,14 @@
 
 #include "../../include/managers/page_manager.h"
 #include "../../include/data/constants.h"
+#include "../../include/utils/stack_utils.h"
+#include "data/page.h"
+#include "data/stack.h"
 #include "utils/checker.h"
 #include "utils/logger.h"
 
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 //FIXME: good
 uint32_t find_last_entity(const Cursor *cursor) {
@@ -49,26 +53,24 @@ Cursor *db_open(const char *filename) {
         error_exit(-1, "Unabled to open file");
     }
 
-    uint64_t file_length = fseek(f, 0, SEEK_END);
-    error_exit(file_length, "Failed to find end of file");
+    uint64_t res = fseek(f, 0L, SEEK_END);
+    error_exit(res, "Failed to find end of file");
+    uint64_t file_length = ftell(f);
     
     File *file = (File*) malloc(sizeof(File));
     Cursor *cursor = (Cursor*) malloc(sizeof(Cursor));
-    Stack *stack = new_stack(256);
 
     file->file = f;
     file->file_length = file_length;
-
     cursor->file = file;
-    cursor->empty_pages = stack;
-    cursor->last_entity_block = find_last_entity(cursor);
 
     if (file_length == 0) {
-        cursor->number_of_pages = 0;
+        cursor->number_of_pages = START_PAGE;
     } else {
         cursor->number_of_pages = (file_length - 1) / BLOCK_SIZE;
     }
 
+    prepare_stack(cursor);
     return cursor;
 }
 

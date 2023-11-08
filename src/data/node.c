@@ -99,7 +99,7 @@ bool compare_id_node(const void *nd_1, const void *nd_2) {
 bool greater_id_node(const void *nd_1, const void *nd_2) {
     Node *node_1 = (Node*) nd_1;
     Node *node_2 = (Node*) nd_2;
-    return node_1->id < node_2->id;
+    return node_1->id > node_2->id;
 }
 
 bool compare_name_node(const void *nd_1, const void *nd_2) {

@@ -1,5 +1,7 @@
 #include "../../include/utils/page_utils.h"
 
+#include "../../include/utils/stack_utils.h"
+
 #include "utils/checker.h"
 #include "utils/logger.h"
 
@@ -24,7 +26,7 @@ Stack *find_all_pages_to_delete(const Cursor *cursor, const Entity *entity) {
     return stack;
 }
 
-void remove_pages(const Cursor *cursor, Stack *stack) {
+void remove_pages(Cursor *cursor, Stack *stack) {
     LOG_DEBUG("In remove_pages", "");
     if (check_is_null_arg(cursor, "cursor") ||
         check_is_null_arg(stack, "stack")) {
@@ -54,7 +56,7 @@ void remove_pages(const Cursor *cursor, Stack *stack) {
         write_to_file(cursor->file, &(zero), UINT32_T_SIZE);
         write_to_file(cursor->file, empty_body, PAGE_BODY_SIZE);
     }
-    push(cursor->empty_pages, last_page);
+    push_in_stack(cursor, last_page);
     free(empty_body);
 }
 
@@ -79,13 +81,15 @@ uint32_t find_page_before(const Cursor *cursor, uint32_t goal_page, uint32_t sta
 uint32_t find_last_page(const Cursor *cursor, uint32_t start_block) {
     LOG_DEBUG("In find_last_page", "");
     uint32_t page_number = start_block;
+    uint32_t read_page = start_block;
     PageHeader *page_header = (PageHeader*) malloc(PAGE_HEADER_SIZE);
     
     do {
-        set_pointer_offset_file(cursor->file, page_header->next_block * BLOCK_SIZE);
+        set_pointer_offset_file(cursor->file, read_page * BLOCK_SIZE);
         read_from_file(cursor->file, page_header, PAGE_HEADER_SIZE);
         page_number = page_header->block_number;
-    } while (page_header->next_block != 0);
+        read_page = page_header->next_block;
+    } while (read_page != 0);
     
     free(page_header);
     return page_number;

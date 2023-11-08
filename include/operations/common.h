@@ -21,15 +21,8 @@ void *find_element(
     const FunctionHelper *function_helper
 );
 
-void *get_elements_by_condition(
-    Cursor *cursor, Entity *entity, 
-    uint64_t size_of_element_malloc, 
-    void *helper, 
-    FunctionHelper *function_helper
-);
-
 bool delete_element(
-    const Cursor *cursor, const void *element, 
+    Cursor *cursor, const void *element, 
     uint64_t size_of_sturcture, 
     const void *type, TypeOfElement element_type, 
     const FunctionHelper *function_helper
@@ -43,20 +36,20 @@ bool update_element(
 );
 
 void remove_bid_element(
-    const Cursor *cursor, const Page *page, 
+    Cursor *cursor, const Page *page, 
     
     Entity *entity, uint64_t size_of_element,
     const uint64_t *pointer
 );
 
 void remove_small_element(
-        const Cursor *cursor, const Page *page,
-        Entity *entity, uint32_t offset, 
-        uint64_t size_of_element, const uint64_t *pointer
+    Cursor *cursor, const Page *page,
+    Entity *entity, uint32_t offset, 
+    uint64_t size_of_element, const uint64_t *pointer
 );
 
 Iterator *select_element(
-    const Cursor *cursor,
+    Cursor *cursor,
     TypeOfElement element_type, const char *type,
     uint64_t size_of_element_malloc, 
     const void *helper, 
