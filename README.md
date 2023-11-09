@@ -1,5 +1,5 @@
 ```
 cmake .
 make
-./main <filename>
+./llp <filename>
 ```
