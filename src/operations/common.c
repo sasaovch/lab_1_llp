@@ -7,7 +7,7 @@
 #include "utils/page_utils.h"
 
 #include <string.h>
-//FIXME: good
+
 bool create_element(
     Cursor *cursor, const void *element,
     TypeOfElement element_type, const char *type,
@@ -44,7 +44,7 @@ bool create_element(
         entity->last_page = page->page_header->block_number;
         global_offset = page->page_header->block_number * BLOCK_SIZE + PAGE_HEADER_SIZE;
     }
-
+    
     set_pointer_offset_file(cursor->file, global_offset);
     function_helper->write_element_to_file(cursor, page, entity, element, id);
 

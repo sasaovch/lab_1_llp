@@ -6,7 +6,6 @@
 
 #include <string.h>
 
-//FIXME: check memcpy id
 void print_relationship(const Relationship *relationship) {
     if (check_is_null_arg(relationship, "relationship")) return;
     println("Print relationship");

@@ -47,8 +47,11 @@ void push_in_stack(Cursor *cursor, uint32_t value) {
     Stack *stack = cursor->empty_pages;
 
     if (stack->page->page_header->offset + UINT32_T_SIZE > PAGE_BODY_SIZE) {
-        uint32_t last_number = pop(stack);
-        push(stack, last_number);
+        uint32_t last_number = INT32_MAX;
+        if (not_empty(stack)) {
+            last_number = pop(stack);
+            push(stack, last_number);
+        }
 
         Page *n_page = get_free_page(cursor, stack->page);
         if (n_page->page_header->block_number == last_number) {

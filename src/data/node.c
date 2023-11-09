@@ -7,7 +7,6 @@
 
 #include <string.h>
 
-//FIXME:"good"
 void print_node(const Node *node) {
     if (check_is_null_arg(node, "node")) return;
     println("Print node");
@@ -29,7 +28,7 @@ void write_node_to_file(Cursor *cursor, Page *page, Entity *entity, const void *
         check_is_null_arg(entity, "entity")) {
         return;
     }
-    Node *node = (Node*) nd;
+        Node *node = (Node*) nd;
 
     if (id == NULL) {
         node->id = entity->next_id;

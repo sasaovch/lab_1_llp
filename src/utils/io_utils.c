@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-//FIXME: good
+
 void println(const char *line, ...) {
     va_list args;
     va_start(args, line);

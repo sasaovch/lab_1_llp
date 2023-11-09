@@ -2,8 +2,7 @@
 
 #include <stdint.h>
 
-//FIXME: change for tests
-#define NAME_TYPE_LENGTH 15
+#define NAME_TYPE_LENGTH 31
 
 extern const uint32_t BLOCK_SIZE;
 extern const uint32_t START_PAGE;

@@ -142,7 +142,7 @@ void write_big_string_to_file(Cursor *cursor, Page *page, Entity *entity, uint32
     free(string_to_write);
     memcpy_page(page, n_page);
 }
-//FIXME: проблемка здесь
+
 void read_big_string_from_file(const Cursor *cursor, Page *page, char *string, uint32_t length, const uint64_t *offset_) {
     uint32_t to_read_length = 0;
     uint32_t string_offset = 0;

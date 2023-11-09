@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-//FIXME: good
+
 uint32_t find_last_entity(const Cursor *cursor) {
     LOG_DEBUG("In find_last_entity", "");
     if (check_is_null_arg(cursor, "cursor")) {
@@ -75,7 +75,7 @@ Cursor *db_open(const char *filename) {
 }
 
 void update_page_header_offset(const Cursor *cursor, const Page *page) {
-    uint64_t header_offset = page->page_header->block_number * BLOCK_SIZE + UINT32_T_SIZE * 2;
+        uint64_t header_offset = page->page_header->block_number * BLOCK_SIZE + UINT32_T_SIZE * 2;
     set_pointer_offset_file(cursor->file, header_offset);
     write_uint_32_to_file(cursor->file, page->page_header->offset);
 }
@@ -101,7 +101,7 @@ uint64_t get_page_offset(const Page *page) {
 }
 
 void write_page_to_file_flush(const Cursor *cursor, const Page *page) {
-    set_pointer_offset_file(cursor->file, get_page_offset(page));
+        set_pointer_offset_file(cursor->file, get_page_offset(page));
     write_to_file(cursor->file, page->page_header, PAGE_HEADER_SIZE);
     write_to_file(cursor->file, page->page_body, PAGE_BODY_SIZE);
     flush(cursor->file);
@@ -194,9 +194,9 @@ void memcpy_page(const Page *dist, const Page *source) {
 }
 
 void write_page_to_file(const Cursor *cursor, const Page *page) {
-    write_to_file(cursor->file, page->page_header, PAGE_HEADER_SIZE);
+        write_to_file(cursor->file, page->page_header, PAGE_HEADER_SIZE);
     write_to_file(cursor->file, page->page_body, PAGE_BODY_SIZE);
-}
+    }
 
 void write_page_to_file_with_offset(const Cursor *cursor, const Page *page, uint64_t offset) {
     set_pointer_offset_file(cursor->file, offset);

@@ -8,7 +8,7 @@
 #include "utils/logger.h"
 
 #include <string.h>
-////FIXME: good
+
 void *next(const Iterator *iterator) {
     return iterator->element;
 }

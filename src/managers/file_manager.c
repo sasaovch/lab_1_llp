@@ -3,7 +3,7 @@
 #include "../include/utils/io_utils.h"
 #include "../include/data/constants.h"
 #include "data/property.h"
-//FIXME: good
+
 void read_from_file(const File *file, void *read_buf, uint64_t size) {
     uint32_t bytes_read = fread(read_buf, size, 1, file->file);
     error_exit(bytes_read, "Error reading from file");

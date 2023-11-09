@@ -4,10 +4,12 @@
 #include "../../include/utils/stack_utils.h"
 #include "../../include/operations/specific.h"
 #include "../../include/operations/crud_methods.h"
+#include "managers/file_manager.h"
 #include "utils/logger.h"
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 #include "time.h"
 
@@ -534,20 +536,20 @@ static void prepare_smoke(Cursor *cursor) {
     Entity data[] = {
         {NODE, 0, 0, 0, 0, "person"},
         {NODE, 0, 0, 0, 0, "pc"},
-        // {NODE, 0, 0, 0, 0, "laba"},
-        // {NODE, 0, 0, 0, 0, "unic"},
-        // {NODE, 0, 0, 0, 0, "human"},
-        // {NODE, 0, 0, 0, 0, "mac"},
-        // {NODE, 0, 0, 0, 0, "io"},
-        // {NODE, 0, 0, 0, 0, "seque"},
-        // {NODE, 0, 0, 0, 0, "read"},
-        // {NODE, 0, 0, 0, 0, "write"},
-        // {NODE, 0, 0, 0, 0, "some"},
-        // {NODE, 0, 0, 0, 0, "idea"},
-        // {NODE, 0, 0, 0, 0, "watch"},
-        // {NODE, 0, 0, 0, 0, "clock"},
-        // {NODE, 0, 0, 0, 0, "phone"},
-        // {NODE, 0, 0, 0, 0, "build"},
+        {NODE, 0, 0, 0, 0, "laba"},
+        {NODE, 0, 0, 0, 0, "unic"},
+        {NODE, 0, 0, 0, 0, "human"},
+        {NODE, 0, 0, 0, 0, "mac"},
+        {NODE, 0, 0, 0, 0, "io"},
+        {NODE, 0, 0, 0, 0, "seque"},
+        {NODE, 0, 0, 0, 0, "read"},
+        {NODE, 0, 0, 0, 0, "write"},
+        {NODE, 0, 0, 0, 0, "some"},
+        {NODE, 0, 0, 0, 0, "idea"},
+        {NODE, 0, 0, 0, 0, "watch"},
+        {NODE, 0, 0, 0, 0, "clock"},
+        {NODE, 0, 0, 0, 0, "phone"},
+        {NODE, 0, 0, 0, 0, "build"},
     };
 
     int count_to_write = sizeof(data) / ENTITY_SIZE;
@@ -638,7 +640,7 @@ void delete_smoke_test(Cursor *cursor) {
     name1[BLOCK_SIZE + PAGE_BODY_SIZE - 1] = '\0';
     char *name = malloc((BLOCK_SIZE + PAGE_BODY_SIZE)* CHAR_SIZE);
 
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < INT32_MAX; i++) {
 
         for (int j = 0; j < 1 * i; j++) {
             int r = rand() % 1;
@@ -728,28 +730,40 @@ void select_delete_smoke_test(Cursor *cursor) {
     node->name = name;
 
     for (int i = 0; i < INT32_MAX; i++) {
-
-        clock_t begin = clock();
     
-        for (int j = 0; j < 500; j++) {
-            if (!create_node(cursor, node)) continue;
+        for (int j = 0; j < 5; j++) {
+            clock_t begin = clock();
+            for (int k = 0; k < 100; k++) {
+                if (!create_node(cursor, node)) continue;
+            }
+            clock_t end = clock();
+            double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+            printf("%f\n", time_spent);
         }
 
-        clock_t end = clock();
-        double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-        printf("%f\n", time_spent);
+        // double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+        // printf("%f\n", time_spent);
 
-        clock_t begin_2 = clock();
+        // clock_t begin_2 = clock();
 
-        node->id += 200;
         
-        for (int j = 0; j < 200; j++) {
-            delete_nodes_greater_id(cursor, node);
-        }
+        // for (int j = 0; j < 5; j++) {
+            clock_t begin = clock();
+            // for (int k = 0; k < 100; k++) {
+                // delete_nodes_greater_id(cursor, node);
+                delete_all_nodes(cursor, node);
+            // }
+            clock_t end = clock();
+            double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+            printf(";%f\n", time_spent);
+        // }
+        // node->id += 500;
+        fflush(stdout);
+
     
-        clock_t end_2 = clock();
-        double time_spent_2 = (double)(end_2 - begin_2) / CLOCKS_PER_SEC;
-        (void) time_spent_2;
+        // clock_t end_2 = clock();
+        // double time_spent_2 = (double)(end_2 - begin_2) / CLOCKS_PER_SEC;
+        // (void) time_spent_2;
         // printf("%f\n", time_spent_2);
     }
     free(node);

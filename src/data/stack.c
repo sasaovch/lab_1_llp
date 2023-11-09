@@ -1,6 +1,7 @@
 #include "../../include/data/stack.h"
 
 #include "../../include/data/constants.h"
+#include "utils/io_utils.h"
 #include "utils/logger.h"
 
 #include <stdint.h>
@@ -38,7 +39,7 @@ void push(Stack *stack, uint32_t value) {
     if (stack->top == stack->size - 1) {
         resize(stack, stack->size * 2);
     }
-    stack->items[stack->top] = value;
+        stack->items[stack->top] = value;
     stack->top++;
     stack->is_empty = false;
 }
@@ -46,7 +47,7 @@ void push(Stack *stack, uint32_t value) {
 uint32_t pop(Stack *stack) {
     if (is_empty(stack)) {
         LOG_INFO("Stack underflow when trying to pop a value", "");
-        return -1;
+        error_exit(ERROR_EXIT_CODE, "Stack underflow when trying to pop a value");
     }
     stack->top--;
     uint32_t value = stack->items[stack->top];

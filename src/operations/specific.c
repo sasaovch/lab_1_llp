@@ -116,30 +116,8 @@ void delete_property_iter(EntityIterator *entity_iterator) {
     Property *delete_prop = entity_iterator->iterator->element;
     Iterator *iterator = entity_iterator->iterator;
     Cursor *cursor = iterator->cursor;
-    // uint64_t size_of_element = iterator->function_helper->get_size_of_element(delete_prop);
-    // uint64_t offset = *(iterator->offset_) - size_of_element;
-    // uint32_t read_block = *(iterator->read_block_);
 
     delete_element(cursor, delete_prop, PROPERTY_SIZE, delete_prop->type, PROPERTY, iterator->function_helper);
-    // Page *page = read_page_from_file(cursor, read_block);
-    // uint32_t next_page = page->page_header->next_block;
-    
-    // uint64_t pointer = (*(entity_iterator->offset_) - 1) * ENTITY_SIZE + entity_iterator->page->page_header->block_number * PAGE_SIZE;
-
-    // if (size_of_element > PAGE_BODY_SIZE) {
-    //     // remove_bid_element(cursor, page, iterator->entity, size_of_element, &(pointer));
-    //     *(entity_iterator->iterator->offset_) = 0;
-    //     *(entity_iterator->iterator->read_block_) = page->page_header->block_number;
-    // } else {
-    //     remove_small_element(cursor, page, iterator->entity, offset, size_of_element, &(pointer));
-    //     if (page->page_header->block_number != read_block && page->page_header->block_number != 0) {
-    //         *(entity_iterator->iterator->offset_) = 0;
-    //         *(entity_iterator->iterator->read_block_) = next_page;
-    //     } else {
-    //         *(entity_iterator->iterator->offset_) = offset;
-    //         *(entity_iterator->iterator->read_block_) = read_block;
-    //     }
-    // }
 }
 
 bool delete_node_with_others(

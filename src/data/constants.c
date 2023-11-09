@@ -7,7 +7,7 @@
 #include "data/iterator.h"
 #include <stdint.h>
 
-const uint32_t BLOCK_SIZE = 80;
+const uint32_t BLOCK_SIZE = 4096;
 const uint32_t START_PAGE = 1;
 const int ERROR_EXIT_CODE = -1;
 const uint64_t UINT32_T_SIZE = sizeof(uint32_t);

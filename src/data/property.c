@@ -7,7 +7,6 @@
 
 #include <string.h>
 
-//FIXME: good
 void print_property(const Property *property) {
     if (check_is_null_arg(property, "property")) return;
     println("Print property");

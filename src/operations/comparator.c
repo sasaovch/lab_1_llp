@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include <string.h>
-//FIXME:ggod
+
 bool is_less(const void *v1, const void *v2, ValueType type) {
     switch (type) {
         case INT: {

@@ -11,7 +11,6 @@
 
 #include <stdint.h>
 #include <string.h>
-//FIXME: good
 
 void print_entity(const Entity *entity) {
     if (check_is_null_arg(entity, "entity")) {
