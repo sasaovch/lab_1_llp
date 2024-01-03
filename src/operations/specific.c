@@ -136,7 +136,7 @@ bool delete_node_with_others(
     free_entity_iter(entity_iterator_prop);
     
     FunctionHelper *function_helper = (FunctionHelper*) malloc(FUNCTION_HELPER);
-    function_helper->condition = greater_id_node;
+    function_helper->condition = compare_id_node;
     function_helper->get_size_of_element = get_size_of_node;
     function_helper->write_element_to_file = write_node_to_file;
     function_helper->read_element_from_file = read_node_from_file;

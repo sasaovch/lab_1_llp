@@ -20,6 +20,11 @@ void prepare_stack(Cursor *cursor) {
         
         write_page_to_file_flush(cursor, page);
         stack->page = page;
+
+        page = new_page();
+        page->page_header->block_number = 1;
+        
+        write_page_to_file_flush(cursor, page);
     } else {
         uint32_t page_num = 0;
         uint32_t prev_num = 0;

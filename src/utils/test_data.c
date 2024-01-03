@@ -472,13 +472,13 @@ void select_relationships_by_node_test(Cursor *cursor) {
 // }
 bool create_test(Cursor *cursor) {
     print_test_format("Start to create");
-    bool result = create_entities_test(cursor) ;
-        create_nodes_test(cursor) ;
-        create_relationships_test(cursor) ;
-        create_properties_test(cursor) ;
+    bool result = create_entities_test(cursor) &&
+        create_nodes_test(cursor) &&
+        create_relationships_test(cursor) &&
+        create_properties_test(cursor) &&
         
-        create_entities_test_1(cursor) ;
-        create_nodes_test_1(cursor) ;
+        create_entities_test_1(cursor) &&
+        create_nodes_test_1(cursor) &&
         create_relationships_test_1(cursor);
     if (result) {
         print_test_format("Created successfuly");

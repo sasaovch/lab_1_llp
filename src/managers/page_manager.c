@@ -101,7 +101,7 @@ uint64_t get_page_offset(const Page *page) {
 }
 
 void write_page_to_file_flush(const Cursor *cursor, const Page *page) {
-        set_pointer_offset_file(cursor->file, get_page_offset(page));
+    set_pointer_offset_file(cursor->file, get_page_offset(page));
     write_to_file(cursor->file, page->page_header, PAGE_HEADER_SIZE);
     write_to_file(cursor->file, page->page_body, PAGE_BODY_SIZE);
     flush(cursor->file);
